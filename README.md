@@ -57,13 +57,13 @@ python timer.py -w 50 -b 10 -c 2 -s bell.wav -m "Work session over!" --title "Br
 
 Command-Line Options
 
-Option	Description	Default
--w, --work-duration	Work duration in minutes	25 minutes
--b, --break-duration	Break duration in minutes	5 minutes
--c, --cycles	Number of work-break cycles	4 cycles
--s, --sound	Path to the sound file to play when timer ends	alarm.wav
--m, --message	Notification message when timer ends	Time is up!
---title	Notification title	Timer Alert
+Option Description Default
+-w, --work-duration Work duration in minutes 25 minutes
+-b, --break-duration Break duration in minutes 5 minutes
+-c, --cycles Number of work-break cycles 4 cycles
+-s, --sound Path to the sound file to play when timer ends alarm.wav
+-m, --message Notification message when timer ends Time is up!
+--title Notification title Timer Alert
 
 Example Usage
 
@@ -71,6 +71,7 @@ python timer.py -w 45 -b 15 -c 3 -s notification.wav -m "Time for a break!" --ti
 
 📜 Script Overview
 
+```python
 #!/usr/bin/env python3
 """
 Customizable Timer Script
@@ -191,6 +192,8 @@ def play_sound(sound_file):
 if __name__ == "__main__":
     main()
 
+```python
+
 ***
 
 ### 🔧 Deployment Considerations
@@ -200,7 +203,7 @@ if __name__ == "__main__":
 • Error Handling: The script includes error handling for missing dependencies and sound files.
 • Customization: All timer settings are easily customizable via command-line arguments.
 
-***
+```
 
 ## 📄 Requirements
 
@@ -238,13 +241,15 @@ This project is licensed under the MIT License.
 
 Exios66
 
-	•GitHub: @Exios66
-	•Email: youremail@example.com
+ •GitHub: @Exios66
+ •Email: <youremail@example.com>
 
 ### 🎉 Acknowledgements
 
-	•Inspired by the Pomodoro Technique.
-	•Utilizes Plyer for notifications.
-	•Utilizes Simpleaudio for sound playback.
+ •Inspired by the Pomodoro Technique.
+ •Utilizes Plyer for notifications.
+ •Utilizes Simpleaudio for sound playback.
 
 Happy Coding!
+
+[![License](https://img.shields.io/github/license/Exios66/python-session-timer)](LICENSE)
