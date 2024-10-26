@@ -18,46 +18,128 @@
             box-sizing: border-box;
         }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            line-height: 1.6;
-            min-height: 100vh;
-            transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
-            background-color: var(--bg-primary);
-            color: var(--text-primary);
-        }
+/* Original Themes */
+.theme-light {
+    --bg-primary: hsl(210, 10%, 95%);
+    --bg-secondary: hsl(210, 10%, 98%);
+    --text-primary: hsl(210, 10%, 10%);
+    --text-secondary: hsl(210, 10%, 30%);
+    --accent-color: hsl(210, 60%, 45%);
+    --border-color: hsl(210, 10%, 85%);
+    --shadow-color: hsla(210, 10%, 10%, 0.1);
+}
 
-        /* Theme Definitions */
-        .theme-light {
-            --bg-primary: hsl(210, 10%, 95%);
-            --bg-secondary: hsl(210, 10%, 98%);
-            --text-primary: hsl(210, 10%, 10%);
-            --text-secondary: hsl(210, 10%, 30%);
-            --accent-color: hsl(210, 60%, 45%);
-            --border-color: hsl(210, 10%, 85%);
-            --shadow-color: hsla(210, 10%, 10%, 0.1);
-        }
+.theme-dark {
+    --bg-primary: hsl(210, 10%, 10%);
+    --bg-secondary: hsl(210, 10%, 15%);
+    --text-primary: hsl(210, 10%, 90%);
+    --text-secondary: hsl(210, 10%, 70%);
+    --accent-color: hsl(210, 60%, 55%);
+    --border-color: hsl(210, 10%, 20%);
+    --shadow-color: hsla(210, 10%, 2%, 0.2);
+}
 
-        .theme-dark {
-            --bg-primary: hsl(210, 10%, 10%);
-            --bg-secondary: hsl(210, 10%, 15%);
-            --text-primary: hsl(210, 10%, 90%);
-            --text-secondary: hsl(210, 10%, 70%);
-            --accent-color: hsl(210, 60%, 55%);
-            --border-color: hsl(210, 10%, 20%);
-            --shadow-color: hsla(210, 10%, 2%, 0.2);
-        }
+.theme-forest {
+    --primary-hue: 150;
+    --bg-primary: hsl(var(--primary-hue), 30%, 95%);
+    --bg-secondary: hsl(var(--primary-hue), 30%, 98%);
+    --text-primary: hsl(var(--primary-hue), 30%, 10%);
+    --text-secondary: hsl(var(--primary-hue), 30%, 30%);
+    --accent-color: hsl(var(--primary-hue), 60%, 35%);
+    --border-color: hsl(var(--primary-hue), 30%, 85%);
+    --shadow-color: hsla(var(--primary-hue), 30%, 10%, 0.1);
+}
 
-        .theme-forest {
-            --primary-hue: 150;
-            --bg-primary: hsl(var(--primary-hue), 30%, 95%);
-            --bg-secondary: hsl(var(--primary-hue), 30%, 98%);
-            --text-primary: hsl(var(--primary-hue), 30%, 10%);
-            --text-secondary: hsl(var(--primary-hue), 30%, 30%);
-            --accent-color: hsl(var(--primary-hue), 60%, 35%);
-            --border-color: hsl(var(--primary-hue), 30%, 85%);
-            --shadow-color: hsla(var(--primary-hue), 30%, 10%, 0.1);
-        }
+/* New Themes */
+.theme-sunset {
+    --bg-primary: hsl(20, 30%, 95%);
+    --bg-secondary: hsl(20, 30%, 98%);
+    --text-primary: hsl(20, 30%, 10%);
+    --text-secondary: hsl(20, 30%, 30%);
+    --accent-color: hsl(20, 80%, 55%);
+    --border-color: hsl(20, 30%, 85%);
+    --shadow-color: hsla(20, 30%, 10%, 0.1);
+}
+
+.theme-ocean {
+    --bg-primary: hsl(200, 40%, 95%);
+    --bg-secondary: hsl(200, 40%, 98%);
+    --text-primary: hsl(200, 40%, 10%);
+    --text-secondary: hsl(200, 40%, 30%);
+    --accent-color: hsl(200, 70%, 45%);
+    --border-color: hsl(200, 40%, 85%);
+    --shadow-color: hsla(200, 40%, 10%, 0.1);
+}
+
+.theme-lavender {
+    --bg-primary: hsl(270, 20%, 95%);
+    --bg-secondary: hsl(270, 20%, 98%);
+    --text-primary: hsl(270, 20%, 10%);
+    --text-secondary: hsl(270, 20%, 30%);
+    --accent-color: hsl(270, 50%, 60%);
+    --border-color: hsl(270, 20%, 85%);
+    --shadow-color: hsla(270, 20%, 10%, 0.1);
+}
+
+.theme-mint {
+    --bg-primary: hsl(160, 40%, 95%);
+    --bg-secondary: hsl(160, 40%, 98%);
+    --text-primary: hsl(160, 40%, 10%);
+    --text-secondary: hsl(160, 40%, 30%);
+    --accent-color: hsl(160, 60%, 40%);
+    --border-color: hsl(160, 40%, 85%);
+    --shadow-color: hsla(160, 40%, 10%, 0.1);
+}
+
+.theme-dark-ocean {
+    --bg-primary: hsl(200, 30%, 10%);
+    --bg-secondary: hsl(200, 30%, 15%);
+    --text-primary: hsl(200, 30%, 90%);
+    --text-secondary: hsl(200, 30%, 70%);
+    --accent-color: hsl(200, 70%, 50%);
+    --border-color: hsl(200, 30%, 20%);
+    --shadow-color: hsla(200, 30%, 2%, 0.2);
+}
+
+.theme-dark-forest {
+    --bg-primary: hsl(150, 20%, 10%);
+    --bg-secondary: hsl(150, 20%, 15%);
+    --text-primary: hsl(150, 20%, 90%);
+    --text-secondary: hsl(150, 20%, 70%);
+    --accent-color: hsl(150, 60%, 45%);
+    --border-color: hsl(150, 20%, 20%);
+    --shadow-color: hsla(150, 20%, 2%, 0.2);
+}
+
+.theme-dark-purple {
+    --bg-primary: hsl(270, 15%, 10%);
+    --bg-secondary: hsl(270, 15%, 15%);
+    --text-primary: hsl(270, 15%, 90%);
+    --text-secondary: hsl(270, 15%, 70%);
+    --accent-color: hsl(270, 60%, 60%);
+    --border-color: hsl(270, 15%, 20%);
+    --shadow-color: hsla(270, 15%, 2%, 0.2);
+}
+
+.theme-high-contrast {
+    --bg-primary: hsl(0, 0%, 100%);
+    --bg-secondary: hsl(0, 0%, 95%);
+    --text-primary: hsl(0, 0%, 0%);
+    --text-secondary: hsl(0, 0%, 20%);
+    --accent-color: hsl(200, 100%, 40%);
+    --border-color: hsl(0, 0%, 80%);
+    --shadow-color: hsla(0, 0%, 0%, 0.1);
+}
+
+.theme-dark-high-contrast {
+    --bg-primary: hsl(0, 0%, 0%);
+    --bg-secondary: hsl(0, 0%, 5%);
+    --text-primary: hsl(0, 0%, 100%);
+    --text-secondary: hsl(0, 0%, 80%);
+    --accent-color: hsl(50, 100%, 50%);
+    --border-color: hsl(0, 0%, 20%);
+    --shadow-color: hsla(0, 0%, 0%, 0.2);
+}
 
         .header {
             background-color: var(--bg-secondary);
@@ -254,22 +336,80 @@
                 grid-template-columns: 1fr;
             }
         }
-    </style>
+        
+</style>
 </head>
 <body class="theme-light">
     <header class="header">
         <div class="header-content">
-            <h1>Productive Timer</h1>
+            <h1>Optimized Productivity Timer</h1>
             <div class="theme-switcher">
                 <label for="theme-select">Theme:</label>
                 <select id="theme-select" aria-label="Theme Selector">
-                    <option value="theme-light">Light</option>
-                    <option value="theme-dark">Dark</option>
-                    <option value="theme-forest">Forest</option>
+                    <!-- Light Themes -->
+                    <optgroup label="Light Themes">
+                        <option value="theme-light">Light</option>
+                        <option value="theme-forest">Forest</option>
+                        <option value="theme-sunset">Sunset</option>
+                        <option value="theme-ocean">Ocean</option>
+                        <option value="theme-lavender">Lavender</option>
+                        <option value="theme-mint">Mint</option>
+                    </optgroup>
+                    
+                    <!-- Dark Themes -->
+                    <optgroup label="Dark Themes">
+                        <option value="theme-dark">Dark</option>
+                        <option value="theme-dark-ocean">Dark Ocean</option>
+                        <option value="theme-dark-forest">Dark Forest</option>
+                        <option value="theme-dark-purple">Dark Purple</option>
+                    </optgroup>
+                    
+                    <!-- High Contrast Themes -->
+                    <optgroup label="Accessibility">
+                        <option value="theme-high-contrast">High Contrast Light</option>
+                        <option value="theme-dark-high-contrast">High Contrast Dark</option>
+                    </optgroup>
                 </select>
             </div>
         </div>
     </header>
+
+    <script>
+    // Theme switching functionality
+    document.getElementById('theme-select').addEventListener('change', function(e) {
+        // Remove all theme classes
+        document.body.classList.remove(
+            'theme-light',
+            'theme-dark',
+            'theme-forest',
+            'theme-sunset',
+            'theme-ocean',
+            'theme-lavender',
+            'theme-mint',
+            'theme-dark-ocean',
+            'theme-dark-forest',
+            'theme-dark-purple',
+            'theme-high-contrast',
+            'theme-dark-high-contrast'
+        );
+        
+        // Add selected theme class
+        document.body.classList.add(e.target.value);
+        
+        // Save theme preference
+        localStorage.setItem('selected-theme', e.target.value);
+    });
+
+    // Load saved theme preference
+    document.addEventListener('DOMContentLoaded', function() {
+        const savedTheme = localStorage.getItem('selected-theme');
+        if (savedTheme) {
+            document.body.classList.remove('theme-light'); // Remove default theme
+            document.body.classList.add(savedTheme);
+            document.getElementById('theme-select').value = savedTheme;
+        }
+    });
+    </script>
 
     <main class="app-container">
         <section class="timer-container" aria-label="Timer">
