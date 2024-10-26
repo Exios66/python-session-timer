@@ -337,6 +337,45 @@
             }
         }
         
+.chart-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.chart-popup-content {
+    background-color: var(--bg-secondary);
+    padding: 20px;
+    border-radius: 1rem;
+    max-width: 80%;
+    max-height: 80%;
+    overflow-y: auto;
+    box-shadow: 0 4px 6px var(--shadow-color);
+}
+
+.chart-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.chart-grid img {
+    width: 100%;
+    height: auto;
+    border-radius: 0.5rem;
+}
+
+#close-popup-btn {
+    float: right;
+}
 </style>
 </head>
 <body class="theme-light">
@@ -371,6 +410,8 @@
                     </optgroup>
                 </select>
             </div>
+            <!-- Add this new button -->
+            <button id="view-charts-btn" class="btn btn-secondary">View Charts</button>
         </div>
     </header>
 
@@ -472,6 +513,19 @@
 
     <div class="notification" id="notification" role="alert" aria-live="assertive"></div>
 
+    <div id="chart-popup" class="chart-popup" style="display: none;">
+        <div class="chart-popup-content">
+            <button id="close-popup-btn" class="btn btn-secondary">Close</button>
+            <h2>Productivity Charts</h2>
+            <div class="chart-grid">
+                <!-- Placeholder for chart images -->
+                <img src="path/to/chart1.png" alt="Productivity Chart 1">
+                <img src="path/to/chart2.png" alt="Productivity Chart 2">
+                <img src="path/to/chart3.png" alt="Productivity Chart 3">
+            </div>
+        </div>
+    </div>
+
     <script>
         class Timer {
             constructor() {
@@ -510,6 +564,7 @@
                 this.loadTheme();
                 this.loadSettings();
                 this.loadStatistics();
+                this.initializeChartPopup();
             }
 
             initializeElements() {
@@ -869,6 +924,26 @@
                 const div = document.createElement('div');
                 div.textContent = text;
                 return div.innerHTML;
+            }
+
+            initializeChartPopup() {
+                const viewChartsBtn = document.getElementById('view-charts-btn');
+                const chartPopup = document.getElementById('chart-popup');
+                const closePopupBtn = document.getElementById('close-popup-btn');
+
+                viewChartsBtn.addEventListener('click', () => {
+                    chartPopup.style.display = 'flex';
+                });
+
+                closePopupBtn.addEventListener('click', () => {
+                    chartPopup.style.display = 'none';
+                });
+
+                chartPopup.addEventListener('click', (e) => {
+                    if (e.target === chartPopup) {
+                        chartPopup.style.display = 'none';
+                    }
+                });
             }
         }
 
