@@ -2,229 +2,506 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Custom Timer App</title>
-    <!-- Embedded CSS -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Customizable Pomodoro Timer with multiple themes and tracking features">
+    <title>Productive Timer - Focus & Break Management</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⏰</text></svg>">
     <style>
-        /* Common Styles */
-        body {
-            font-family: Arial, sans-serif;
+        :root {
+            --primary-hue: 210;
+            --transition-speed: 0.3s;
+        }
+
+        * {
             margin: 0;
             padding: 0;
-            transition: background-color 0.3s, color 0.3s;
+            box-sizing: border-box;
         }
-        nav {
-            background-color: var(--nav-bg-color);
-            padding: 10px;
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            min-height: 100vh;
+            transition: all var(--transition-speed) ease;
+        }
+
+        /* Theme Definitions */
+        .theme-light {
+            --bg-primary: hsl(var(--primary-hue), 10%, 95%);
+            --bg-secondary: hsl(var(--primary-hue), 10%, 98%);
+            --text-primary: hsl(var(--primary-hue), 10%, 10%);
+            --text-secondary: hsl(var(--primary-hue), 10%, 30%);
+            --accent-color: hsl(var(--primary-hue), 60%, 45%);
+            --border-color: hsl(var(--primary-hue), 10%, 85%);
+            --shadow-color: hsla(var(--primary-hue), 10%, 10%, 0.1);
+        }
+
+        .theme-dark {
+            --bg-primary: hsl(var(--primary-hue), 10%, 10%);
+            --bg-secondary: hsl(var(--primary-hue), 10%, 15%);
+            --text-primary: hsl(var(--primary-hue), 10%, 90%);
+            --text-secondary: hsl(var(--primary-hue), 10%, 70%);
+            --accent-color: hsl(var(--primary-hue), 60%, 55%);
+            --border-color: hsl(var(--primary-hue), 10%, 20%);
+            --shadow-color: hsla(var(--primary-hue), 10%, 2%, 0.2);
+        }
+
+        .theme-forest {
+            --primary-hue: 150;
+            --bg-primary: hsl(var(--primary-hue), 30%, 95%);
+            --bg-secondary: hsl(var(--primary-hue), 30%, 98%);
+            --text-primary: hsl(var(--primary-hue), 30%, 10%);
+            --text-secondary: hsl(var(--primary-hue), 30%, 30%);
+            --accent-color: hsl(var(--primary-hue), 60%, 35%);
+            --border-color: hsl(var(--primary-hue), 30%, 85%);
+            --shadow-color: hsla(var(--primary-hue), 30%, 10%, 0.1);
+        }
+
+        /* Applied Styles */
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+        }
+
+        .app-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        .header {
+            background-color: var(--bg-secondary);
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 2px 4px var(--shadow-color);
+        }
+
+        .header-content {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
         }
-        nav ul {
-            list-style-type: none;
-            display: flex;
-            gap: 15px;
-            margin: 0;
-            padding: 0;
-        }
-        nav a {
-            color: var(--nav-text-color);
-            text-decoration: none;
-            font-weight: bold;
-        }
-        .container {
-            padding: 20px;
-        }
-        /* Theme Styles */
-        /* Light Theme */
-        .light-theme {
-            --bg-color: #f0f0f0;
-            --text-color: #000;
-            --nav-bg-color: #e0e0e0;
-            --nav-text-color: #000;
-        }
-        /* Dark Theme */
-        .dark-theme {
-            --bg-color: #181818;
-            --text-color: #fff;
-            --nav-bg-color: #282828;
-            --nav-text-color: #fff;
-        }
-        /* Additional Themes */
-        /* Blue Theme */
-        .blue-theme {
-            --bg-color: #e6f0ff;
-            --text-color: #003366;
-            --nav-bg-color: #cce0ff;
-            --nav-text-color: #003366;
-        }
-        /* Applying Theme Variables */
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-        }
-        /* Form Styles */
-        form label {
-            display: block;
-            margin-top: 15px;
-        }
-        form input, form select {
-            width: 100%;
-            padding: 8px;
-            margin-top: 5px;
-        }
-        form button {
-            margin-top: 20px;
-            padding: 10px 15px;
-            font-size: 16px;
-        }
-        /* Timer Display Styles */
-        #timer-display {
-            font-size: 48px;
+
+        .timer-container {
+            background-color: var(--bg-secondary);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin: 2rem auto;
+            max-width: 600px;
+            box-shadow: 0 4px 6px var(--shadow-color);
             text-align: center;
-            margin-top: 50px;
+        }
+
+        .timer-display {
+            font-size: 6rem;
+            font-weight: bold;
+            font-family: monospace;
+            margin: 2rem 0;
+            color: var(--accent-color);
+        }
+
+        .timer-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            background-color: var(--accent-color);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: opacity var(--transition-speed);
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background-color: var(--text-secondary);
+        }
+
+        .settings-panel {
+            background-color: var(--bg-secondary);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin: 2rem auto;
+            max-width: 600px;
+            box-shadow: 0 4px 6px var(--shadow-color);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background-color: var(--border-color);
+            border-radius: 4px;
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: var(--accent-color);
+            transition: width 1s linear;
+            width: 0%;
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .stat-card {
+            background-color: var(--bg-secondary);
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 4px var(--shadow-color);
+        }
+
+        .theme-switcher {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        select {
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+        }
+
+        @media (max-width: 768px) {
+            .timer-display {
+                font-size: 4rem;
+            }
+
+            .timer-controls {
+                grid-template-columns: 1fr;
+            }
+
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+
+        .notification {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            padding: 1rem;
+            background-color: var(--accent-color);
+            color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 4px var(--shadow-color);
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
         }
     </style>
 </head>
-<body class="light-theme">
-    <nav>
-        <div>
-            <a href="#" id="home-link">Home</a>
+<body class="theme-light">
+    <header class="header">
+        <div class="header-content">
+            <h1>Productive Timer</h1>
+            <div class="theme-switcher">
+                <label for="theme-select">Theme:</label>
+                <select id="theme-select">
+                    <option value="theme-light">Light</option>
+                    <option value="theme-dark">Dark</option>
+                    <option value="theme-forest">Forest</option>
+                </select>
+            </div>
         </div>
-        <div>
-            <label for="theme-select">Theme:</label>
-            <select id="theme-select">
-                <option value="light-theme">Light Theme</option>
-                <option value="dark-theme">Dark Theme</option>
-                <option value="blue-theme">Blue Theme</option>
-                <!-- Add more themes here -->
-            </select>
+    </header>
+
+    <div class="app-container">
+        <div class="timer-container">
+            <h2 id="timer-mode">Focus Time</h2>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress"></div>
+            </div>
+            <div class="timer-display" id="timer">25:00</div>
+            <div class="timer-controls">
+                <button class="btn" id="start">Start</button>
+                <button class="btn" id="pause" disabled>Pause</button>
+                <button class="btn btn-secondary" id="reset">Reset</button>
+                <button class="btn btn-secondary" id="skip">Skip</button>
+            </div>
+            <div id="cycle-display">Cycle: 1 / 4</div>
         </div>
-    </nav>
-    <div class="container" id="content">
-        <!-- Content will be injected here -->
+
+        <div class="settings-panel">
+            <h2>Timer Settings</h2>
+            <form id="settings-form">
+                <div class="form-group">
+                    <label for="focus-time">Focus Time (minutes)</label>
+                    <input type="number" id="focus-time" value="25" min="1" max="60">
+                </div>
+                <div class="form-group">
+                    <label for="break-time">Break Time (minutes)</label>
+                    <input type="number" id="break-time" value="5" min="1" max="30">
+                </div>
+                <div class="form-group">
+                    <label for="cycles">Number of Cycles</label>
+                    <input type="number" id="cycles" value="4" min="1" max="10">
+                </div>
+                <button type="submit" class="btn">Save Settings</button>
+            </form>
+        </div>
+
+        <div class="stats-container">
+            <div class="stat-card">
+                <h3>Total Focus Time</h3>
+                <p id="total-focus-time">0 minutes</p>
+            </div>
+            <div class="stat-card">
+                <h3>Completed Cycles</h3>
+                <p id="completed-cycles">0</p>
+            </div>
+            <div class="stat-card">
+                <h3>Breaks Taken</h3>
+                <p id="breaks-taken">0</p>
+            </div>
+        </div>
     </div>
-    <!-- Embedded JavaScript -->
+
+    <div class="notification" id="notification"></div>
+
     <script>
-        // JavaScript Code
+        class Timer {
+            constructor() {
+                this.focusTime = 25;
+                this.breakTime = 5;
+                this.cycles = 4;
+                this.currentCycle = 1;
+                this.isRunning = false;
+                this.isPaused = false;
+                this.isFocusTime = true;
+                this.timeRemaining = this.focusTime * 60;
+                this.interval = null;
+                this.totalFocusTime = 0;
+                this.completedCycles = 0;
+                this.breaksTaken = 0;
 
-        // Variables to store user settings
-        let workDuration = 25; // in minutes
-        let breakDuration = 5; // in minutes
-        let cycles = 4;
-        let currentCycle = 0;
-        let isWorkTime = true;
-        let timerInterval;
-        let theme = 'light-theme';
+                this.initializeElements();
+                this.initializeEventListeners();
+                this.loadSettings();
+                this.updateDisplay();
+            }
 
-        // Function to load the landing page
-        function loadLandingPage() {
-            const content = document.getElementById('content');
-            content.innerHTML = \`
-                <h1>Welcome to the Custom Timer App</h1>
-                <form id="timer-form">
-                    <label for="work-duration">Work Duration (minutes):</label>
-                    <input type="number" id="work-duration" name="work_duration" value="\${workDuration}" min="1" required>
+            initializeElements() {
+                this.timerDisplay = document.getElementById('timer');
+                this.timerMode = document.getElementById('timer-mode');
+                this.startButton = document.getElementById('start');
+                this.pauseButton = document.getElementById('pause');
+                this.resetButton = document.getElementById('reset');
+                this.skipButton = document.getElementById('skip');
+                this.cycleDisplay = document.getElementById('cycle-display');
+                this.progressBar = document.getElementById('progress');
+                this.settingsForm = document.getElementById('settings-form');
+                this.notification = document.getElementById('notification');
+                this.themeSelect = document.getElementById('theme-select');
+            }
 
-                    <label for="break-duration">Break Duration (minutes):</label>
-                    <input type="number" id="break-duration" name="break_duration" value="\${breakDuration}" min="1" required>
+            initializeEventListeners() {
+                this.startButton.addEventListener('click', () => this.start());
+                this.pauseButton.addEventListener('click', () => this.pause());
+                this.resetButton.addEventListener('click', () => this.reset());
+                this.skipButton.addEventListener('click', () => this.skip());
+                this.settingsForm.addEventListener('submit', (e) => this.saveSettings(e));
+                this.themeSelect.addEventListener('change', (e) => this.changeTheme(e.target.value));
 
-                    <label for="cycles">Number of Cycles:</label>
-                    <input type="number" id="cycles-input" name="cycles" value="\${cycles}" min="1" required>
+                // Load saved theme
+                const savedTheme = localStorage.getItem('theme') || 'theme-light';
+                this.themeSelect.value = savedTheme;
+                this.changeTheme(savedTheme);
+            }
 
-                    <button type="submit">Start Timer</button>
-                </form>
-            \`;
+            loadSettings() {
+                const settings = JSON.parse(localStorage.getItem('timerSettings')) || {};
+                this.focusTime = settings.focusTime || 25;
+                this.breakTime = settings.breakTime || 5;
+                this.cycles = settings.cycles || 4;
+                this.timeRemaining = this.focusTime * 60;
 
-            document.getElementById('timer-form').addEventListener('submit', function(e) {
+                document.getElementById('focus-time').value = this.focusTime;
+                document.getElementById('break-time').value = this.breakTime;
+                document.getElementById('cycles').value = this.cycles;
+            }
+
+            saveSettings(e) {
                 e.preventDefault();
-                // Get values from form
-                workDuration = parseInt(document.getElementById('work-duration').value);
-                breakDuration = parseInt(document.getElementById('break-duration').value);
-                cycles = parseInt(document.getElementById('cycles-input').value);
-                currentCycle = 0;
-                isWorkTime = true;
-                // Start timer
-                loadTimerPage();
-            });
-        }
+                this.focusTime = parseInt(document.getElementById('focus-time').value);
+                this.breakTime = parseInt(document.getElementById('break-time').value);
+                this.cycles = parseInt(document.getElementById('cycles').value);
 
-        // Function to load the timer page
-        function loadTimerPage() {
-            const content = document.getElementById('content');
-            content.innerHTML = \`
-                <h1>Timer</h1>
-                <div id="timer-display">Loading...</div>
-                <button id="stop-button">Stop Timer</button>
-            \`;
+                localStorage.setItem('timerSettings', JSON.stringify({
+                    focusTime: this.focusTime,
+                    breakTime: this.breakTime,
+                    cycles: this.cycles
+                }));
 
-            document.getElementById('stop-button').addEventListener('click', function() {
-                clearInterval(timerInterval);
-                loadLandingPage();
-            });
+                this.reset();
+                this.showNotification('Settings saved successfully!');
+            }
 
-            startTimer();
-        }
+            start() {
+                if (!this.isRunning) {
+                    this.isRunning = true;
+                    this.isPaused = false;
+                    this.startButton.disabled = true;
+                    this.pauseButton.disabled = false;
+                    this.interval = setInterval(() => this.tick(), 1000);
+                }
+            }
 
-        // Function to start the timer
-        function startTimer() {
-            let duration = (isWorkTime ? workDuration : breakDuration) * 60;
-            const timerDisplay = document.getElementById('timer-display');
-
-            function updateTimer() {
-                let minutes = Math.floor(duration / 60);
-                let seconds = duration % 60;
-                timerDisplay.innerText = \`\${isWorkTime ? 'Work' : 'Break'} Time: \${minutes}:\${seconds < 10 ? '0' : ''}\${seconds}\`;
-                if (duration > 0) {
-                    duration--;
-                } else {
-                    clearInterval(timerInterval);
-                    if (isWorkTime) {
-                        alert('Work session over!');
-                        isWorkTime = false;
-                        startTimer();
+            pause() {
+                if (this.isRunning) {
+                    if (this.isPaused) {
+                        this.isPaused = false;
+                        this.interval = setInterval(() => this.tick(), 1000);
+                        this.pauseButton.textContent = 'Pause';
                     } else {
-                        alert('Break over!');
-                        isWorkTime = true;
-                        currentCycle++;
-                        if (currentCycle >= cycles) {
-                            alert('All cycles completed!');
-                            loadLandingPage();
-                            return;
-                        }
-                        startTimer();
+                        this.isPaused = true;
+                        clearInterval(this.interval);
+                        this.pauseButton.textContent = 'Resume';
                     }
                 }
             }
 
-            updateTimer();
-            timerInterval = setInterval(updateTimer, 1000);
+            reset() {
+                this.isRunning = false;
+                this.isPaused = false;
+                clearInterval(this.interval);
+                this.isFocusTime = true;
+                this.currentCycle = 1;
+                this.timeRemaining = this.focusTime * 60;
+                this.startButton.disabled = false;
+                this.pauseButton.disabled = true;
+                this.pauseButton.textContent = 'Pause';
+                this.updateDisplay();
+            }
+
+            skip() {
+                this.switchMode();
+            }
+
+            tick() {
+                if (this.timeRemaining > 0) {
+                    this.timeRemaining--;
+                    if (this.isFocusTime) {
+                        this.totalFocusTime++;
+                    }
+                    this.updateDisplay();
+                } else {
+                    this.switchMode();
+                }
+            }
+
+            switchMode() {
+                if (this.isFocusTime) {
+                    this.isFocusTime = false;
+                    this.timeRemaining = this.breakTime * 60;
+                    this.breaksTaken++;
+                    this.showNotification('Break time! Take a rest.');
+                } else {
+                    this.isFocusTime = true;
+                    this.timeRemaining = this.focusTime * 60;
+                    this.currentCycle++;
+                    
+                    if (this.currentCycle > this.cycles) {
+                        this.completedCycles++;
+                        this.showNotification('Congratulations! All cycles completed.');
+                        this.reset();
+                        return;
+                    }
+                    this.showNotification('Focus time! Let\'s get back to work.');
+                }
+                this.updateDisplay();
+            }
+
+            updateDisplay() {
+                const minutes = Math.floor(this.timeRemaining / 60);
+                const seconds = this.timeRemaining % 60;
+                this.timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                this.timerMode.textContent = this.isFocusTime ? 'Focus Time' : 'Break Time';
+                this.cycleDisplay.textContent = `Cycle: ${this.currentCycle} / ${this.cycles}`;
+
+                // Update progress bar
+                const totalTime = this.isFocusTime ? this.focusTime * 60 : this.breakTime * 60;
+                const progress = ((totalTime - this.timeRemaining) / totalTime) * 100;
+                this.progressBar.style.width = `${progress}%`;
+
+                // Update stats
+                document.getElementById('total-focus-time').textContent = `${Math.floor(this.totalFocusTime / 60)} minutes`;
+                document.getElementById('completed-cycles').textContent = this.completedCycles;
+                document.getElementById('breaks-taken').textContent = this.breaksTaken;
+            }
+
+            showNotification(message) {
+                this.notification.textContent = message;
+                this.notification.style.display = 'block';
+                setTimeout(() => {
+                    this.notification.style.display = 'none';
+                }, 3000);
+            }
+
+            changeTheme(theme) {
+                document.body.className = theme;
+                localStorage.setItem('theme', theme);
+            }
         }
 
-        // Function to change theme
-        function changeTheme(newTheme) {
-            document.body.classList.remove(theme);
-            document.body.classList.add(newTheme);
-            theme = newTheme;
-        }
-
-        // Event listener for theme selection
-        document.getElementById('theme-select').addEventListener('change', function() {
-            changeTheme(this.value);
+        // Initialize the timer when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            const timer = new Timer();
         });
-
-        // Event listener for home link
-        document.getElementById('home-link').addEventListener('click', function(e) {
-            e.preventDefault();
-            clearInterval(timerInterval);
-            loadLandingPage();
-        });
-
-        // Load the landing page on initial load
-        window.onload = function() {
-            loadLandingPage();
-            // Set initial theme
-            changeTheme(theme);
-        };
     </script>
 </body>
 </html>
