@@ -1,0 +1,12 @@
+# Coverage
+.coverage
+coverage.xml
+htmlcov/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Documentation
+docs/_build/
