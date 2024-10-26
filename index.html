@@ -22,28 +22,30 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             line-height: 1.6;
             min-height: 100vh;
-            transition: all var(--transition-speed) ease;
+            transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
         }
 
         /* Theme Definitions */
         .theme-light {
-            --bg-primary: hsl(var(--primary-hue), 10%, 95%);
-            --bg-secondary: hsl(var(--primary-hue), 10%, 98%);
-            --text-primary: hsl(var(--primary-hue), 10%, 10%);
-            --text-secondary: hsl(var(--primary-hue), 10%, 30%);
-            --accent-color: hsl(var(--primary-hue), 60%, 45%);
-            --border-color: hsl(var(--primary-hue), 10%, 85%);
-            --shadow-color: hsla(var(--primary-hue), 10%, 10%, 0.1);
+            --bg-primary: hsl(210, 10%, 95%);
+            --bg-secondary: hsl(210, 10%, 98%);
+            --text-primary: hsl(210, 10%, 10%);
+            --text-secondary: hsl(210, 10%, 30%);
+            --accent-color: hsl(210, 60%, 45%);
+            --border-color: hsl(210, 10%, 85%);
+            --shadow-color: hsla(210, 10%, 10%, 0.1);
         }
 
         .theme-dark {
-            --bg-primary: hsl(var(--primary-hue), 10%, 10%);
-            --bg-secondary: hsl(var(--primary-hue), 10%, 15%);
-            --text-primary: hsl(var(--primary-hue), 10%, 90%);
-            --text-secondary: hsl(var(--primary-hue), 10%, 70%);
-            --accent-color: hsl(var(--primary-hue), 60%, 55%);
-            --border-color: hsl(var(--primary-hue), 10%, 20%);
-            --shadow-color: hsla(var(--primary-hue), 10%, 2%, 0.2);
+            --bg-primary: hsl(210, 10%, 10%);
+            --bg-secondary: hsl(210, 10%, 15%);
+            --text-primary: hsl(210, 10%, 90%);
+            --text-secondary: hsl(210, 10%, 70%);
+            --accent-color: hsl(210, 60%, 55%);
+            --border-color: hsl(210, 10%, 20%);
+            --shadow-color: hsla(210, 10%, 2%, 0.2);
         }
 
         .theme-forest {
@@ -55,18 +57,6 @@
             --accent-color: hsl(var(--primary-hue), 60%, 35%);
             --border-color: hsl(var(--primary-hue), 30%, 85%);
             --shadow-color: hsla(var(--primary-hue), 30%, 10%, 0.1);
-        }
-
-        /* Applied Styles */
-        body {
-            background-color: var(--bg-primary);
-            color: var(--text-primary);
-        }
-
-        .app-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 1rem;
         }
 
         .header {
@@ -84,13 +74,37 @@
             margin: 0 auto;
         }
 
-        .timer-container {
+        .theme-switcher {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .theme-switcher select {
+            padding: 0.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.25rem;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            cursor: pointer;
+        }
+
+        .app-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        .timer-container, .settings-panel, .stat-card {
             background-color: var(--bg-secondary);
             border-radius: 1rem;
             padding: 2rem;
             margin: 2rem auto;
             max-width: 600px;
             box-shadow: 0 4px 6px var(--shadow-color);
+        }
+
+        .timer-container {
             text-align: center;
         }
 
@@ -120,8 +134,9 @@
             transition: opacity var(--transition-speed);
         }
 
-        .btn:hover {
+        .btn:hover, .btn:focus {
             opacity: 0.9;
+            outline: none;
         }
 
         .btn:disabled {
@@ -133,13 +148,8 @@
             background-color: var(--text-secondary);
         }
 
-        .settings-panel {
-            background-color: var(--bg-secondary);
-            border-radius: 1rem;
-            padding: 2rem;
-            margin: 2rem auto;
-            max-width: 600px;
-            box-shadow: 0 4px 6px var(--shadow-color);
+        .settings-panel h2, .stat-card h3 {
+            margin-bottom: 1rem;
         }
 
         .form-group {
@@ -159,6 +169,7 @@
             border-radius: 0.5rem;
             background-color: var(--bg-primary);
             color: var(--text-primary);
+            font-size: 1rem;
         }
 
         .progress-bar {
@@ -177,32 +188,52 @@
             width: 0%;
         }
 
-        .stats-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-top: 2rem;
+        .session-log {
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 1rem;
+            background-color: var(--bg-primary);
+            border-radius: 0.5rem;
+            margin-top: 1rem;
         }
 
-        .stat-card {
-            background-color: var(--bg-secondary);
-            padding: 1.5rem;
+        .log-entry {
+            padding: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.9rem;
+        }
+
+        .export-section, .data-export-controls {
+            margin-top: 1rem;
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+        }
+
+        .notification {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            padding: 1rem;
+            background-color: var(--accent-color);
+            color: white;
             border-radius: 0.5rem;
             box-shadow: 0 2px 4px var(--shadow-color);
+            display: none;
+            animation: slideIn 0.3s ease;
+            z-index: 1000;
         }
 
-        .theme-switcher {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        select {
-            padding: 0.5rem;
-            border-radius: 0.5rem;
-            border: 1px solid var(--border-color);
-            background-color: var(--bg-primary);
-            color: var(--text-primary);
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
         }
 
         @media (max-width: 768px) {
@@ -218,29 +249,9 @@
                 flex-direction: column;
                 gap: 1rem;
             }
-        }
 
-        .notification {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            padding: 1rem;
-            background-color: var(--accent-color);
-            color: white;
-            border-radius: 0.5rem;
-            box-shadow: 0 2px 4px var(--shadow-color);
-            display: none;
-            animation: slideIn 0.3s ease;
-        }
-
-        @keyframes slideIn {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
+            .stats-container {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -251,7 +262,7 @@
             <h1>Productive Timer</h1>
             <div class="theme-switcher">
                 <label for="theme-select">Theme:</label>
-                <select id="theme-select">
+                <select id="theme-select" aria-label="Theme Selector">
                     <option value="theme-light">Light</option>
                     <option value="theme-dark">Dark</option>
                     <option value="theme-forest">Forest</option>
@@ -260,42 +271,42 @@
         </div>
     </header>
 
-    <div class="app-container">
-        <div class="timer-container">
+    <main class="app-container">
+        <section class="timer-container" aria-label="Timer">
             <h2 id="timer-mode">Focus Time</h2>
-            <div class="progress-bar">
+            <div class="progress-bar" aria-hidden="true">
                 <div class="progress-fill" id="progress"></div>
             </div>
-            <div class="timer-display" id="timer">25:00</div>
+            <div class="timer-display" id="timer" aria-live="polite">25:00</div>
             <div class="timer-controls">
-                <button class="btn" id="start">Start</button>
-                <button class="btn" id="pause" disabled>Pause</button>
-                <button class="btn btn-secondary" id="reset">Reset</button>
-                <button class="btn btn-secondary" id="skip">Skip</button>
+                <button class="btn" id="start" aria-label="Start Timer">Start</button>
+                <button class="btn" id="pause" disabled aria-label="Pause Timer">Pause</button>
+                <button class="btn btn-secondary" id="reset" aria-label="Reset Timer">Reset</button>
+                <button class="btn btn-secondary" id="skip" aria-label="Skip Timer">Skip</button>
             </div>
-            <div id="cycle-display">Cycle: 1 / 4</div>
-        </div>
+            <div id="cycle-display" aria-live="polite">Cycle: 1 / 4</div>
+        </section>
 
-        <div class="settings-panel">
+        <section class="settings-panel" aria-label="Timer Settings">
             <h2>Timer Settings</h2>
             <form id="settings-form">
                 <div class="form-group">
                     <label for="focus-time">Focus Time (minutes)</label>
-                    <input type="number" id="focus-time" value="25" min="1" max="60">
+                    <input type="number" id="focus-time" value="25" min="1" max="60" aria-required="true">
                 </div>
                 <div class="form-group">
                     <label for="break-time">Break Time (minutes)</label>
-                    <input type="number" id="break-time" value="5" min="1" max="30">
+                    <input type="number" id="break-time" value="5" min="1" max="30" aria-required="true">
                 </div>
                 <div class="form-group">
                     <label for="cycles">Number of Cycles</label>
-                    <input type="number" id="cycles" value="4" min="1" max="10">
+                    <input type="number" id="cycles" value="4" min="1" max="10" aria-required="true">
                 </div>
-                <button type="submit" class="btn">Save Settings</button>
+                <button type="submit" class="btn" aria-label="Save Settings">Save Settings</button>
             </form>
-        </div>
+        </section>
 
-        <div class="stats-container">
+        <section class="stats-container" aria-label="Statistics">
             <div class="stat-card">
                 <h3>Total Focus Time</h3>
                 <p id="total-focus-time">0 minutes</p>
@@ -308,45 +319,74 @@
                 <h3>Breaks Taken</h3>
                 <p id="breaks-taken">0</p>
             </div>
-        </div>
-    </div>
+            <div class="stat-card">
+                <h3>Session Data</h3>
+                <div id="session-log" class="session-log" aria-label="Session Log"></div>
+                <div class="data-export-controls">
+                    <button class="btn" id="export-csv" aria-label="Export Data as CSV">Export CSV</button>
+                    <button class="btn btn-secondary" id="clear-data" aria-label="Clear All Data">Clear Data</button>
+                </div>
+            </div>
+        </section>
+    </main>
 
-    <div class="notification" id="notification"></div>
+    <div class="notification" id="notification" role="alert" aria-live="assertive"></div>
 
     <script>
         class Timer {
             constructor() {
-                this.focusTime = 25;
-                this.breakTime = 5;
-                this.cycles = 4;
+                // Default Settings
+                this.defaultSettings = {
+                    focusTime: 25,
+                    breakTime: 5,
+                    totalCycles: 4
+                };
+
+                // Initialize state
+                this.focusTime = this.defaultSettings.focusTime;
+                this.breakTime = this.defaultSettings.breakTime;
+                this.totalCycles = this.defaultSettings.totalCycles;
                 this.currentCycle = 1;
+                this.isBreak = false;
                 this.isRunning = false;
-                this.isPaused = false;
-                this.isFocusTime = true;
                 this.timeRemaining = this.focusTime * 60;
                 this.interval = null;
-                this.totalFocusTime = 0;
-                this.completedCycles = 0;
-                this.breaksTaken = 0;
+                this.sessionLog = [];
+                this.statistics = {
+                    totalFocusTime: 0,
+                    completedCycles: 0,
+                    breaksTaken: 0,
+                    sessionStart: null,
+                    sessionEnd: null
+                };
 
+                // Initialize DOM elements
                 this.initializeElements();
+
+                // Bind event listeners
                 this.initializeEventListeners();
+
+                // Load saved data
+                this.loadTheme();
                 this.loadSettings();
-                this.updateDisplay();
+                this.loadStatistics();
             }
 
             initializeElements() {
                 this.timerDisplay = document.getElementById('timer');
                 this.timerMode = document.getElementById('timer-mode');
+                this.progressFill = document.getElementById('progress');
+                this.cycleDisplay = document.getElementById('cycle-display');
                 this.startButton = document.getElementById('start');
                 this.pauseButton = document.getElementById('pause');
                 this.resetButton = document.getElementById('reset');
                 this.skipButton = document.getElementById('skip');
-                this.cycleDisplay = document.getElementById('cycle-display');
-                this.progressBar = document.getElementById('progress');
                 this.settingsForm = document.getElementById('settings-form');
-                this.notification = document.getElementById('notification');
                 this.themeSelect = document.getElementById('theme-select');
+                this.notification = document.getElementById('notification');
+                this.exportButton = document.getElementById('export-csv');
+                this.clearDataButton = document.getElementById('clear-data');
+                this.sessionLogContainer = document.getElementById('session-log');
             }
 
             initializeEventListeners() {
@@ -355,146 +395,340 @@
                 this.resetButton.addEventListener('click', () => this.reset());
                 this.skipButton.addEventListener('click', () => this.skip());
                 this.settingsForm.addEventListener('submit', (e) => this.saveSettings(e));
-                this.themeSelect.addEventListener('change', (e) => this.changeTheme(e.target.value));
+                this.themeSelect.addEventListener('change', () => this.changeTheme());
+                this.exportButton.addEventListener('click', () => this.exportData());
+                this.clearDataButton.addEventListener('click', () => this.clearData());
+            }
 
-                // Load saved theme
-                const savedTheme = localStorage.getItem('theme') || 'theme-light';
-                this.themeSelect.value = savedTheme;
-                this.changeTheme(savedTheme);
+            loadTheme() {
+                const savedTheme = localStorage.getItem('theme');
+                if (savedTheme) {
+                    document.body.className = savedTheme;
+                    this.themeSelect.value = savedTheme;
+                }
             }
 
             loadSettings() {
-                const settings = JSON.parse(localStorage.getItem('timerSettings')) || {};
-                this.focusTime = settings.focusTime || 25;
-                this.breakTime = settings.breakTime || 5;
-                this.cycles = settings.cycles || 4;
-                this.timeRemaining = this.focusTime * 60;
-
-                document.getElementById('focus-time').value = this.focusTime;
-                document.getElementById('break-time').value = this.breakTime;
-                document.getElementById('cycles').value = this.cycles;
+                const settings = JSON.parse(localStorage.getItem('timerSettings'));
+                if (settings) {
+                    this.focusTime = settings.focusTime;
+                    this.breakTime = settings.breakTime;
+                    this.totalCycles = settings.totalCycles;
+                    this.timeRemaining = this.focusTime * 60;
+                    this.currentCycle = 1;
+                }
+                this.updateDisplay();
+                this.updateSettingsForm();
             }
 
-            saveSettings(e) {
-                e.preventDefault();
-                this.focusTime = parseInt(document.getElementById('focus-time').value);
-                this.breakTime = parseInt(document.getElementById('break-time').value);
-                this.cycles = parseInt(document.getElementById('cycles').value);
+            loadStatistics() {
+                const stats = JSON.parse(localStorage.getItem('timerStats'));
+                if (stats) {
+                    this.statistics = { ...this.statistics, ...stats };
+                }
+                this.updateStatistics();
+                this.updateLogDisplay();
+            }
+
+            saveSettings(event) {
+                event.preventDefault();
+                const focusTimeInput = document.getElementById('focus-time');
+                const breakTimeInput = document.getElementById('break-time');
+                const cyclesInput = document.getElementById('cycles');
+
+                const newFocusTime = parseInt(focusTimeInput.value, 10);
+                const newBreakTime = parseInt(breakTimeInput.value, 10);
+                const newCycles = parseInt(cyclesInput.value, 10);
+
+                if (isNaN(newFocusTime) || isNaN(newBreakTime) || isNaN(newCycles)) {
+                    this.showNotification('Invalid input values', true);
+                    return;
+                }
+
+                this.focusTime = newFocusTime;
+                this.breakTime = newBreakTime;
+                this.totalCycles = newCycles;
+                this.timeRemaining = this.focusTime * 60;
+                this.currentCycle = 1;
+                this.isBreak = false;
 
                 localStorage.setItem('timerSettings', JSON.stringify({
                     focusTime: this.focusTime,
                     breakTime: this.breakTime,
-                    cycles: this.cycles
+                    totalCycles: this.totalCycles
                 }));
 
-                this.reset();
-                this.showNotification('Settings saved successfully!');
+                this.reset(false);
+                this.showNotification('Settings saved successfully');
             }
 
             start() {
-                if (!this.isRunning) {
-                    this.isRunning = true;
-                    this.isPaused = false;
-                    this.startButton.disabled = true;
-                    this.pauseButton.disabled = false;
-                    this.interval = setInterval(() => this.tick(), 1000);
+                if (this.isRunning) return;
+
+                this.isRunning = true;
+                this.startButton.disabled = true;
+                this.pauseButton.disabled = false;
+
+                if (!this.statistics.sessionStart) {
+                    this.statistics.sessionStart = new Date().toISOString();
+                    this.saveStatistics();
                 }
+
+                this.interval = setInterval(() => this.tick(), 1000);
+                this.logEvent('Timer started');
             }
 
             pause() {
-                if (this.isRunning) {
-                    if (this.isPaused) {
-                        this.isPaused = false;
-                        this.interval = setInterval(() => this.tick(), 1000);
-                        this.pauseButton.textContent = 'Pause';
-                    } else {
-                        this.isPaused = true;
-                        clearInterval(this.interval);
-                        this.pauseButton.textContent = 'Resume';
-                    }
-                }
-            }
+                if (!this.isRunning) return;
 
-            reset() {
                 this.isRunning = false;
-                this.isPaused = false;
-                clearInterval(this.interval);
-                this.isFocusTime = true;
-                this.currentCycle = 1;
-                this.timeRemaining = this.focusTime * 60;
                 this.startButton.disabled = false;
                 this.pauseButton.disabled = true;
-                this.pauseButton.textContent = 'Pause';
+
+                clearInterval(this.interval);
+                this.logEvent('Timer paused');
+            }
+
+            reset(showLog = true) {
+                this.isRunning = false;
+                this.isBreak = false;
+                this.currentCycle = 1;
+                this.timeRemaining = this.focusTime * 60;
+                clearInterval(this.interval);
+                this.startButton.disabled = false;
+                this.pauseButton.disabled = true;
                 this.updateDisplay();
+                if (showLog) this.logEvent('Timer reset');
             }
 
             skip() {
-                this.switchMode();
+                if (this.isBreak) {
+                    this.logEvent('Break skipped');
+                    this.startFocusTime();
+                } else {
+                    this.logEvent('Focus time skipped');
+                    this.startBreakTime();
+                }
             }
 
             tick() {
                 if (this.timeRemaining > 0) {
                     this.timeRemaining--;
-                    if (this.isFocusTime) {
-                        this.totalFocusTime++;
-                    }
                     this.updateDisplay();
-                } else {
-                    this.switchMode();
+                }
+
+                if (this.timeRemaining <= 0) {
+                    this.handleTimerComplete();
                 }
             }
 
-            switchMode() {
-                if (this.isFocusTime) {
-                    this.isFocusTime = false;
-                    this.timeRemaining = this.breakTime * 60;
-                    this.breaksTaken++;
-                    this.showNotification('Break time! Take a rest.');
+            handleTimerComplete() {
+                clearInterval(this.interval);
+                this.isRunning = false;
+                this.startButton.disabled = false;
+                this.pauseButton.disabled = true;
+
+                if (this.isBreak) {
+                    this.statistics.breaksTaken++;
+                    this.logEvent('Break completed');
+                    this.startFocusTime();
                 } else {
-                    this.isFocusTime = true;
-                    this.timeRemaining = this.focusTime * 60;
-                    this.currentCycle++;
-                    
-                    if (this.currentCycle > this.cycles) {
-                        this.completedCycles++;
-                        this.showNotification('Congratulations! All cycles completed.');
-                        this.reset();
-                        return;
+                    this.statistics.totalFocusTime += this.focusTime;
+                    if (this.currentCycle >= this.totalCycles) {
+                        this.statistics.completedCycles++;
+                        this.completeSession();
+                    } else {
+                        this.startBreakTime();
                     }
-                    this.showNotification('Focus time! Let\'s get back to work.');
                 }
+
+                this.saveStatistics();
+                this.updateStatistics();
+            }
+
+            startFocusTime() {
+                if (this.currentCycle > this.totalCycles) return;
+
+                this.isBreak = false;
+                this.timeRemaining = this.focusTime * 60;
                 this.updateDisplay();
+                this.logEvent(`Focus Time: Cycle ${this.currentCycle} started`);
+            }
+
+            startBreakTime() {
+                this.isBreak = true;
+                this.timeRemaining = this.breakTime * 60;
+                this.updateDisplay();
+                this.logEvent(`Break Time: Cycle ${this.currentCycle} started`);
+                this.statistics.breaksTaken++;
+            }
+
+            completeSession() {
+                this.statistics.sessionEnd = new Date().toISOString();
+                this.reset();
+                this.showNotification('Session completed!');
+                this.logEvent('Session completed');
+                this.saveStatistics();
             }
 
             updateDisplay() {
                 const minutes = Math.floor(this.timeRemaining / 60);
                 const seconds = this.timeRemaining % 60;
-                this.timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-                this.timerMode.textContent = this.isFocusTime ? 'Focus Time' : 'Break Time';
-                this.cycleDisplay.textContent = `Cycle: ${this.currentCycle} / ${this.cycles}`;
+                this.timerDisplay.textContent = `${this.formatTime(minutes)}:${this.formatTime(seconds)}`;
+                this.timerMode.textContent = this.isBreak ? 'Break Time' : 'Focus Time';
+                this.cycleDisplay.textContent = `Cycle: ${this.currentCycle} / ${this.totalCycles}`;
 
-                // Update progress bar
-                const totalTime = this.isFocusTime ? this.focusTime * 60 : this.breakTime * 60;
-                const progress = ((totalTime - this.timeRemaining) / totalTime) * 100;
-                this.progressBar.style.width = `${progress}%`;
-
-                // Update stats
-                document.getElementById('total-focus-time').textContent = `${Math.floor(this.totalFocusTime / 60)} minutes`;
-                document.getElementById('completed-cycles').textContent = this.completedCycles;
-                document.getElementById('breaks-taken').textContent = this.breaksTaken;
+                const totalTime = this.isBreak ? this.breakTime * 60 : this.focusTime * 60;
+                const elapsedTime = totalTime - this.timeRemaining;
+                const progressPercent = (elapsedTime / totalTime) * 100;
+                this.progressFill.style.width = `${progressPercent}%`;
             }
 
-            showNotification(message) {
+            formatTime(time) {
+                return time.toString().padStart(2, '0');
+            }
+
+            updateSettingsForm() {
+                document.getElementById('focus-time').value = this.focusTime;
+                document.getElementById('break-time').value = this.breakTime;
+                document.getElementById('cycles').value = this.totalCycles;
+            }
+
+            updateStatistics() {
+                document.getElementById('total-focus-time').textContent = `${this.statistics.totalFocusTime} minutes`;
+                document.getElementById('completed-cycles').textContent = this.statistics.completedCycles;
+                document.getElementById('breaks-taken').textContent = this.statistics.breaksTaken;
+            }
+
+            logEvent(event) {
+                const timestamp = new Date().toLocaleTimeString();
+                const logEntry = {
+                    timestamp: timestamp,
+                    event: event,
+                    cycle: this.currentCycle,
+                    timeRemaining: this.timeRemaining
+                };
+                this.sessionLog.push(logEntry);
+                this.updateLogDisplay();
+            }
+
+            updateLogDisplay() {
+                if (this.sessionLog.length === 0) {
+                    this.sessionLogContainer.innerHTML = '<p>No session logs available.</p>';
+                    return;
+                }
+
+                const logHTML = this.sessionLog
+                    .map(entry => `<div class="log-entry">${entry.timestamp}: ${this.escapeHTML(entry.event)}</div>`)
+                    .join('');
+                this.sessionLogContainer.innerHTML = logHTML;
+                this.sessionLogContainer.scrollTop = this.sessionLogContainer.scrollHeight;
+            }
+
+            exportData() {
+                const data = this.prepareExportData();
+                const csv = this.convertToCSV(data);
+                const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.setAttribute('href', url);
+                a.setAttribute('download', `timer_data_${new Date().toISOString()}.csv`);
+                a.style.display = 'none';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                this.showNotification('Data exported successfully');
+            }
+
+            prepareExportData() {
+                return {
+                    settings: {
+                        focusTime: this.focusTime,
+                        breakTime: this.breakTime,
+                        totalCycles: this.totalCycles
+                    },
+                    statistics: this.statistics,
+                    sessionLog: this.sessionLog
+                };
+            }
+
+            convertToCSV(data) {
+                const headers = [
+                    'Export Date',
+                    'Session Start',
+                    'Session End',
+                    'Focus Time (min)',
+                    'Break Time (min)',
+                    'Total Cycles',
+                    'Completed Cycles',
+                    'Breaks Taken',
+                    'Total Focus Time (min)',
+                    'Event Timestamp',
+                    'Event Type'
+                ];
+
+                const rows = [headers.join(',')];
+
+                data.sessionLog.forEach(log => {
+                    const row = [
+                        new Date().toISOString(),
+                        data.statistics.sessionStart || '',
+                        data.statistics.sessionEnd || '',
+                        data.settings.focusTime,
+                        data.settings.breakTime,
+                        data.settings.totalCycles,
+                        data.statistics.completedCycles,
+                        data.statistics.breaksTaken,
+                        data.statistics.totalFocusTime,
+                        `"${log.timestamp}"`,
+                        `"${log.event.replace(/"/g, '""')}"`
+                    ];
+                    rows.push(row.join(','));
+                });
+
+                return rows.join('\n');
+            }
+
+            clearData() {
+                if (confirm('Are you sure you want to clear all data? This cannot be undone.')) {
+                    this.sessionLog = [];
+                    this.statistics = {
+                        totalFocusTime: 0,
+                        completedCycles: 0,
+                        breaksTaken: 0,
+                        sessionStart: null,
+                        sessionEnd: null
+                    };
+                    localStorage.removeItem('timerStats');
+                    this.updateStatistics();
+                    this.updateLogDisplay();
+                    this.showNotification('All data cleared');
+                }
+            }
+
+            showNotification(message, isError = false) {
                 this.notification.textContent = message;
+                this.notification.style.backgroundColor = isError ? 'hsl(0, 70%, 50%)' : 'var(--accent-color)';
                 this.notification.style.display = 'block';
                 setTimeout(() => {
                     this.notification.style.display = 'none';
                 }, 3000);
             }
 
-            changeTheme(theme) {
-                document.body.className = theme;
-                localStorage.setItem('theme', theme);
+            changeTheme() {
+                const selectedTheme = this.themeSelect.value;
+                document.body.className = selectedTheme;
+                localStorage.setItem('theme', selectedTheme);
+            }
+
+            saveStatistics() {
+                localStorage.setItem('timerStats', JSON.stringify(this.statistics));
+            }
+
+            escapeHTML(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
             }
         }
 
