@@ -1,10 +1,16 @@
 # 🕒 Python Session Timer
 
-[![Python](https://img.shields.io/badge/Python-3.8%2B-blue)](https://www.python.org/)
 [![License](https://img.shields.io/github/license/Exios66/python-session-timer)](LICENSE)
-[![Stars](https://img.shields.io/github/stars/Exios66/python-session-timer?style=social)](https://github.com/Exios66/python-session-timer/stargazers)
-[![Forks](https://img.shields.io/github/forks/Exios66/python-session-timer?style=social)](https://github.com/Exios66/python-session-timer/network/members)
-[![Issues](https://img.shields.io/github/issues/Exios66/python-session-timer)](https://github.com/Exios66/python-session-timer/issues)
+[![Python](https://img.shields.io/badge/python-3.6+-blue.svg)](https://www.python.org/downloads/)
+[![Documentation Status](https://readthedocs.org/projects/python-session-timer/badge/?version=latest)](https://python-session-timer.readthedocs.io/en/latest/?badge=latest)
+[![Pages Build Status](https://github.com/Exios66/python-session-timer/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/Exios66/python-session-timer/actions/workflows/pages/pages-build-deployment)
+[![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Live-brightgreen)](https://exios66.github.io/python-session-timer/)
+[![Coverage Status](https://coveralls.io/repos/github/Exios66/python-session-timer/badge.svg?branch=main)](https://coveralls.io/github/Exios66/python-session-timer?branch=main)
+[![GitHub issues](https://img.shields.io/github/issues/Exios66/python-session-timer)](https://github.com/Exios66/python-session-timer/issues)
+[![GitHub stars](https://img.shields.io/github/stars/Exios66/python-session-timer)](https://github.com/Exios66/python-session-timer/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/Exios66/python-session-timer)](https://github.com/Exios66/python-session-timer/network)
+[![GitHub last commit](https://img.shields.io/github/last-commit/Exios66/python-session-timer)](https://github.com/Exios66/python-session-timer/commits/main)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 A customizable and cross-platform timer script inspired by the Pomodoro Technique. Perfect for managing work sessions and breaks with notifications and sound alerts.
 
