@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Custom Timer App</title>
+    <!-- Embedded CSS -->
+    <style>
+        /* Common Styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        nav {
+            background-color: var(--nav-bg-color);
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        nav ul {
+            list-style-type: none;
+            display: flex;
+            gap: 15px;
+            margin: 0;
+            padding: 0;
+        }
+        nav a {
+            color: var(--nav-text-color);
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .container {
+            padding: 20px;
+        }
+        /* Theme Styles */
+        /* Light Theme */
+        .light-theme {
+            --bg-color: #f0f0f0;
+            --text-color: #000;
+            --nav-bg-color: #e0e0e0;
+            --nav-text-color: #000;
+        }
+        /* Dark Theme */
+        .dark-theme {
+            --bg-color: #181818;
+            --text-color: #fff;
+            --nav-bg-color: #282828;
+            --nav-text-color: #fff;
+        }
+        /* Additional Themes */
+        /* Blue Theme */
+        .blue-theme {
+            --bg-color: #e6f0ff;
+            --text-color: #003366;
+            --nav-bg-color: #cce0ff;
+            --nav-text-color: #003366;
+        }
+        /* Applying Theme Variables */
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+        /* Form Styles */
+        form label {
+            display: block;
+            margin-top: 15px;
+        }
+        form input, form select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+        }
+        form button {
+            margin-top: 20px;
+            padding: 10px 15px;
+            font-size: 16px;
+        }
+        /* Timer Display Styles */
+        #timer-display {
+            font-size: 48px;
+            text-align: center;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body class="light-theme">
+    <nav>
+        <div>
+            <a href="#" id="home-link">Home</a>
+        </div>
+        <div>
+            <label for="theme-select">Theme:</label>
+            <select id="theme-select">
+                <option value="light-theme">Light Theme</option>
+                <option value="dark-theme">Dark Theme</option>
+                <option value="blue-theme">Blue Theme</option>
+                <!-- Add more themes here -->
+            </select>
+        </div>
+    </nav>
+    <div class="container" id="content">
+        <!-- Content will be injected here -->
+    </div>
+    <!-- Embedded JavaScript -->
+    <script>
+        // JavaScript Code
+
+        // Variables to store user settings
+        let workDuration = 25; // in minutes
+        let breakDuration = 5; // in minutes
+        let cycles = 4;
+        let currentCycle = 0;
+        let isWorkTime = true;
+        let timerInterval;
+        let theme = 'light-theme';
+
+        // Function to load the landing page
+        function loadLandingPage() {
+            const content = document.getElementById('content');
+            content.innerHTML = \`
+                <h1>Welcome to the Custom Timer App</h1>
+                <form id="timer-form">
+                    <label for="work-duration">Work Duration (minutes):</label>
+                    <input type="number" id="work-duration" name="work_duration" value="\${workDuration}" min="1" required>
+
+                    <label for="break-duration">Break Duration (minutes):</label>
+                    <input type="number" id="break-duration" name="break_duration" value="\${breakDuration}" min="1" required>
+
+                    <label for="cycles">Number of Cycles:</label>
+                    <input type="number" id="cycles-input" name="cycles" value="\${cycles}" min="1" required>
+
+                    <button type="submit">Start Timer</button>
+                </form>
+            \`;
+
+            document.getElementById('timer-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                // Get values from form
+                workDuration = parseInt(document.getElementById('work-duration').value);
+                breakDuration = parseInt(document.getElementById('break-duration').value);
+                cycles = parseInt(document.getElementById('cycles-input').value);
+                currentCycle = 0;
+                isWorkTime = true;
+                // Start timer
+                loadTimerPage();
+            });
+        }
+
+        // Function to load the timer page
+        function loadTimerPage() {
+            const content = document.getElementById('content');
+            content.innerHTML = \`
+                <h1>Timer</h1>
+                <div id="timer-display">Loading...</div>
+                <button id="stop-button">Stop Timer</button>
+            \`;
+
+            document.getElementById('stop-button').addEventListener('click', function() {
+                clearInterval(timerInterval);
+                loadLandingPage();
+            });
+
+            startTimer();
+        }
+
+        // Function to start the timer
+        function startTimer() {
+            let duration = (isWorkTime ? workDuration : breakDuration) * 60;
+            const timerDisplay = document.getElementById('timer-display');
+
+            function updateTimer() {
+                let minutes = Math.floor(duration / 60);
+                let seconds = duration % 60;
+                timerDisplay.innerText = \`\${isWorkTime ? 'Work' : 'Break'} Time: \${minutes}:\${seconds < 10 ? '0' : ''}\${seconds}\`;
+                if (duration > 0) {
+                    duration--;
+                } else {
+                    clearInterval(timerInterval);
+                    if (isWorkTime) {
+                        alert('Work session over!');
+                        isWorkTime = false;
+                        startTimer();
+                    } else {
+                        alert('Break over!');
+                        isWorkTime = true;
+                        currentCycle++;
+                        if (currentCycle >= cycles) {
+                            alert('All cycles completed!');
+                            loadLandingPage();
+                            return;
+                        }
+                        startTimer();
+                    }
+                }
+            }
+
+            updateTimer();
+            timerInterval = setInterval(updateTimer, 1000);
+        }
+
+        // Function to change theme
+        function changeTheme(newTheme) {
+            document.body.classList.remove(theme);
+            document.body.classList.add(newTheme);
+            theme = newTheme;
+        }
+
+        // Event listener for theme selection
+        document.getElementById('theme-select').addEventListener('change', function() {
+            changeTheme(this.value);
+        });
+
+        // Event listener for home link
+        document.getElementById('home-link').addEventListener('click', function(e) {
+            e.preventDefault();
+            clearInterval(timerInterval);
+            loadLandingPage();
+        });
+
+        // Load the landing page on initial load
+        window.onload = function() {
+            loadLandingPage();
+            // Set initial theme
+            changeTheme(theme);
+        };
+    </script>
+</body>
+</html>
