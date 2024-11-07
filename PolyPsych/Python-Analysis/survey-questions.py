@@ -220,3 +220,123 @@ sample_response = {
 
 # Process and export results
 survey.export_results()
+Here is the continuation of the **PSY 492 Election Experience Survey**:
+
+**Start of Block: Voting Behavior**
+
+Voted_2020 Did you vote in the 2020 Presidential Election?
+
+- Yes (1)
+- No (2)
+
+Vote_Choice If you voted in the 2020 Presidential Election, which candidate did you vote for?
+
+- Joe Biden (1)
+- Donald Trump (2)
+- Another Candidate (3) ______________________________________________________________
+- Did not vote (4)
+
+Voting_Motivation What were the main factors that influenced your decision to vote or not vote in the 2020 election? (Check all that apply)
+
+- [ ] Candidate policy positions (1)
+- [ ] Candidate character (2)
+- [ ] Party affiliation (3)
+- [ ] Desire to influence election outcome (4)
+- [ ] Civic duty (5)
+- [ ] Social pressure (6)
+- [ ] Availability of time (7)
+- [ ] Voter suppression concerns (8)
+- [ ] Lack of trust in the electoral process (9)
+- [ ] Other (10) ______________________________________________________________
+
+Election_Outcome How satisfied were you with the outcome of the 2020 Presidential Election?
+
+- Extremely dissatisfied (1)
+- Somewhat dissatisfied (2)
+- Neither satisfied nor dissatisfied (3)
+- Somewhat satisfied (4)
+- Extremely satisfied (5)
+
+Voting_2024 If you plan to vote in the upcoming 2024 election, what issues will be most important to you when deciding whom to vote for? (Please list in order of importance)
+
+1. ______________________________________________________________
+2. ______________________________________________________________
+3. ______________________________________________________________
+
+**End of Block: Voting Behavior**
+
+**Start of Block: Political Efficacy and Participation**
+
+Political_Efficacy On a scale from 1 to 7, where 1 means "Not at all effective" and 7 means "Extremely effective," how effective do you feel your vote is in influencing political change?
+
+- 1 (Not at all effective) (1)
+- 2 (2)
+- 3 (3)
+- 4 (4)
+- 5 (5)
+- 6 (6)
+- 7 (Extremely effective) (7)
+
+Political_Activism Have you engaged in any of the following political activities in the last 12 months? (Check all that apply)
+
+- [ ] Attended a political rally or protest (1)
+- [ ] Volunteered for a political campaign (2)
+- [ ] Made political donations (3)
+- [ ] Contacted a public official (4)
+- [ ] Signed a political petition (5)
+- [ ] Discussed politics with friends or family (6)
+- [ ] None of the above (7)
+
+Volunteer_Why If you have volunteered for a political campaign or cause, what motivated you to do so?
+
+- ______________________________________________________________
+
+**End of Block: Political Efficacy and Participation**
+
+**Start of Block: Trust in Government**
+
+Trust_Government Please rate your level of trust in the following government institutions on a scale from 1 (No trust at all) to 5 (Complete trust):
+
+- Executive branch (President and administration)
+  - 1 (1)
+  - 2 (2)
+  - 3 (3)
+  - 4 (4)
+  - 5 (Complete trust) (5)
+
+- Legislative branch (Congress)
+  - 1 (1)
+  - 2 (2)
+  - 3 (3)
+  - 4 (4)
+  - 5 (Complete trust) (5)
+
+- Judicial branch (Courts)
+  - 1 (1)
+  - 2 (2)
+  - 3 (3)
+  - 4 (4)
+  - 5 (Complete trust) (5)
+
+- Local government
+  - 1 (1)
+  - 2 (2)
+  - 3 (3)
+  - 4 (4)
+  - 5 (Complete trust) (5)
+
+Trust_Loss What, if anything, would increase your trust in the government?
+
+- ______________________________________________________________
+
+**End of Block: Trust in Government**
+
+**Start of Block: Closing**
+
+Feedback Is there anything else you would like to share about your political views, experiences, or any suggestions for this survey?
+
+- ______________________________________________________________
+
+Thank you for participating in the PSY 492 Election Experience Survey. Your responses will contribute to valuable research on political behavior and media influence.
+
+**End of Block: Closing**
