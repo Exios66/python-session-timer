@@ -198,10 +198,71 @@ class ResponseAnalyzer:
         plt.tight_layout()
         plt.show()
 
+    def _find_question(self, question_id: str) -> 'Question':
+        """Find a question by its ID across all blocks"""
+        for block in self.survey.blocks:
+            for question in block.questions:
+                if question.question_id == question_id:
+                    return question
+        raise ValueError(f"Question {question_id} not found")
+
+    def _analyze_numerical(self, series: pd.Series) -> Dict[str, Any]:
+        """Analyze numerical responses"""
+        return {
+            'mean': series.mean(),
+            'median': series.median(),
+            'std': series.std(),
+            'min': series.min(),
+            'max': series.max(),
+            'count': len(series)
+        }
+
+    def _analyze_text(self, series: pd.Series) -> Dict[str, Any]:
+        """Analyze text responses"""
+        # Count number of responses
+        response_count = series.count()
+        # Get unique responses
+        unique_responses = series.unique().tolist()
+        # Calculate average response length
+        avg_length = series.str.len().mean()
+        
+        return {
+            'response_count': response_count,
+            'unique_responses': len(unique_responses),
+            'avg_length': avg_length,
+            'sample_responses': unique_responses[:5]  # Show first 5 unique responses
+        }
+
+    def analyze_text_responses(self, question_id: str) -> Dict[str, Any]:
+        """Analyze open-ended text responses"""
+        if self.df is None:
+            self.create_dataframe()
+            
+        if question_id not in self.df.columns:
+            raise ValueError(f"Question {question_id} not found in responses")
+            
+        return self._analyze_text(self.df[question_id])
+
+    def calculate_correlations(self, question_ids: List[str]) -> pd.DataFrame:
+        """Calculate correlations between specified questions"""
+        if self.df is None:
+            self.create_dataframe()
+            
+        # Filter numeric columns only
+        numeric_data = self.df[question_ids].apply(pd.to_numeric, errors='coerce')
+        
+        return numeric_data.corr()
+
 @dataclass
 class Block:
     block_id: str
-    questions: List['Question']
+    title: str
+    questions: List['Question'] = None
+
+    def __init__(self, block_id: str, title: str):
+        self.block_id = block_id
+        self.title = title
+        self.questions = []
 
     def add_question(self, question):
         self.questions.append(question)
@@ -231,7 +292,7 @@ class Question:
 # Creating blocks and questions
 
 # Demographics Block
-demographics = Block("Demographics", [])
+demographics = Block("Demographics", "Demographics")
 demographics.add_question(Question("Age", "What is your age?", "open_ended"))
 demographics.add_question(Question("Year", "What year are you in college?", "multiple_choice", 
                                    ["First Year (1)", "Sophomore (2)", "Junior (3)", "Senior (4)", "5+ Years (5)"]))
@@ -248,7 +309,7 @@ demographics.add_question(Question("Household_Income", "What was your total hous
                                     "Prefer not to say (7)"]))
 
 # Political Demographics Block
-demographics_political = Block("Demographics Political", [])
+demographics_political = Block("Demographics Political", "Political Views and Affiliation")
 demographics_political.add_question(Question("Election", "Do you plan to vote in the upcoming 2024 election?", "multiple_choice", 
                                              ["Yes (1)", "No (2)"]))
 demographics_political.add_question(Question("Party_Affiliation", "Generally speaking, do you usually think of yourself as a Republican, a Democrat, an Independent, or something else?", "multiple_choice", 
@@ -265,7 +326,7 @@ demographics_political.add_question(Question("Party_Registration", "What politic
                                              ["Republican (1)", "Democratic (2)", "Independent (3)", "Other (4)", "None (5)"]))
 
 # Personal Political Characteristics Block
-personal_political = Block("Personal Political Characteristics", [])
+personal_political = Block("Personal Political Characteristics", "Political Efficacy and Participation")
 personal_political.add_question(Question("P_Efficacy", "For each question below, please choose the response that best reflects how you feel.", "likert_scale", 
                                         ["Strongly Disagree (1)", "Somewhat disagree (2)", "Neither agree nor disagree (3)", "Somewhat agree (4)", "Strongly agree (5)"]))
 personal_political.add_question(Question("P_Knowledge_Intro", "Here are a few questions about the federal government. Many people don't know the answers to these questions, so if there are some you don't know, just provide your best guess.", "intro"))
@@ -277,32 +338,32 @@ personal_political.add_question(Question("P_Knowledge_4", "Do you happen to know
 personal_political.add_question(Question("P_Knowledge_5", "Would you say that one of the parties is more conservative than the other at the national level? Which party is more conservative?", "open_ended"))
 
 # Perception of News Sources Block
-perception_news = Block("Perception of News Sources", [])
+perception_news = Block("Perception of News Sources", "Perception of Political Information on Social Media")
 # Add all the news sources as individual questions here. For brevity, only one example is shown:
 perception_news.add_question(Question("ABC_News", "ABC News", "likert_scale", 
                                       ["1 (Definitely not)", "2 (Probably not)", "3 (Might or might not be)", "4 (Probably is)", "5 (Definitely is)"]))
 
 # Social Media Block
-social_media = Block("Perception of Political Information on Social Media", [])
+social_media = Block("Perception of Political Information on Social Media", "Media Consumption Questions")
 social_media.add_question(Question("Social_Media", "Social media as a source of political information and news is...", "likert_scale", 
                                    ["Does not apply at all (1)", "2", "3", "4", "5", "6", "Fully Applies (7)"]))
 
 # Media Consumption Block
-media_consumption = Block("Media Consumption Questions", [])
+media_consumption = Block("Media Consumption Questions", "Misinformation Threat")
 media_consumption.add_question(Question("News_1", "Where do you typically get your news?", "multiple_choice", 
                                         ["Print newspapers (1)", "Television (2)", "News websites (3)", "Social media (4)", "Radio (5)", "Podcasts (6)"]))
 media_consumption.add_question(Question("News_frequency", "How often do you consume news?", "multiple_choice", 
                                        ["Daily", "A few times a week", "Once a week", "A few times a month", "Rarely", "Never"]))
 
 # Misinformation Threat Block
-misinformation_threat = Block("Mis_Threat", [])
+misinformation_threat = Block("Mis_Threat", "Voting Behavior")
 misinformation_threat.add_question(Question("Disinfo_threat", "On the scale from 0 to 10, where 0 means no risk and 10 means extreme risk, how would you rate the risk of disinformation campaigns to each of the following?", "scale", 
                                             ["0 (No risk)", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10 (Extreme risk)"]))
 misinformation_threat.add_question(Question("Disinfo_Res", "In your opinion, who is primarily responsible for combating disinformation?", "multiple_choice", 
                                             ["Government", "Social Media Companies", "Educational Institutions", "News Outlets", "Individuals", "Other (Please specify)"]))
 
 # Voting Behavior Block
-voting_behavior = Block("Voting Behavior", [])
+voting_behavior = Block("Voting Behavior", "Trust in Government")
 voting_behavior.add_question(Question("Voted_2020", "Did you vote in the 2020 Presidential Election?", "multiple_choice", 
                                     ["Yes (1)", "No (2)"]))
 voting_behavior.add_question(Question("Vote_Choice", "If you voted in the 2020 Presidential Election, which candidate did you vote for?", "multiple_choice", 
@@ -475,69 +536,56 @@ print("Thank you for participating in the PSY 492 Election Experience Survey. Yo
 print("**End of Block: Closing**")
 
 def run_analysis():
-    # Create survey collector
-    survey = SurveyCollector("PSY_492", "Election Experience Survey")
-    
-    # Create blocks
-    political_block = Block("political_views", "Political Views and Affiliation")
-    efficacy_block = Block("efficacy", "Political Efficacy and Participation") 
-    trust_block = Block("trust", "Trust in Government")
-    closing_block = Block("closing", "Closing")
-    
-    # Add blocks to survey
-    survey.add_block(political_block)
-    survey.add_block(efficacy_block)
-    survey.add_block(trust_block)
-    survey.add_block(closing_block)
-    
-    # Create analyzer
-    analyzer = ResponseAnalyzer(survey)
-    
-    # Analyze key questions
-    political_views = analyzer.analyze_question("Political_Views")
-    print("\nPolitical Views Analysis:")
-    print(political_views)
-    
-    party_affiliation = analyzer.analyze_question("Party_Affiliation") 
-    print("\nParty Affiliation Analysis:")
-    print(party_affiliation)
-    
-    trust_scores = analyzer.analyze_question("Trust_Government")
-    print("\nGovernment Trust Analysis:")
-    print(trust_scores)
-    
-    # Analyze open-ended responses
-    trust_loss = analyzer.analyze_text_responses("Trust_Loss")
-    print("\nTrust Loss Themes:")
-    print(trust_loss)
-    
-    volunteer_why = analyzer.analyze_text_responses("Volunteer_Why")
-    print("\nVolunteer Motivation Themes:")
-    print(volunteer_why)
-    
-    feedback = analyzer.analyze_text_responses("Feedback")
-    print("\nSurvey Feedback Themes:")
-    print(feedback)
-    
-    # Calculate correlations
-    correlations = analyzer.calculate_correlations([
-        "Political_Views",
-        "Party_Affiliation", 
-        "Trust_Government"
-    ])
-    print("\nCorrelation Analysis:")
-    print(correlations)
-    
-    # Create visualizations
-    analyzer.plot_question("Political_Views", 
-                         title="Distribution of Political Views",
-                         plot_type='histogram')
-    
-    analyzer.plot_question("Party_Affiliation",
-                         title="Party Affiliation Distribution")
-    
-    # Export results
-    survey.export_to_excel("survey_results.xlsx")
-    
+    try:
+        # Create survey collector
+        survey = SurveyCollector("PSY_492", "Election Experience Survey")
+        
+        # Create and populate blocks
+        demographics = Block("demographics", "Demographics")
+        political_block = Block("political_views", "Political Views and Affiliation")
+        efficacy_block = Block("efficacy", "Political Efficacy and Participation") 
+        trust_block = Block("trust", "Trust in Government")
+        closing_block = Block("closing", "Closing")
+        
+        # Add questions to blocks (add your existing questions here)
+        # ...
+        
+        # Add blocks to survey
+        for block in [demographics, political_block, efficacy_block, trust_block, closing_block]:
+            survey.add_block(block)
+        
+        # Add sample response for testing
+        sample_response = {
+            "Age": "23",
+            "Political_Views": 4,
+            "Party_Affiliation": "Democrat (2)",
+            "Trust_Government": 3,
+            # Add other fields as needed
+        }
+        survey.collect_response(sample_response)
+        
+        # Create analyzer and run analysis
+        analyzer = ResponseAnalyzer(survey)
+        
+        # Run your analyses
+        try:
+            political_views = analyzer.analyze_question("Political_Views")
+            print("\nPolitical Views Analysis:")
+            print(political_views)
+        except Exception as e:
+            logging.error(f"Error analyzing Political Views: {e}")
+        
+        # Export results
+        try:
+            survey.export_to_excel("survey_results.xlsx")
+            print("\nResults exported successfully")
+        except Exception as e:
+            logging.error(f"Error exporting results: {e}")
+            
+    except Exception as e:
+        logging.error(f"Analysis failed: {e}")
+        raise
+
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO)
     run_analysis()
