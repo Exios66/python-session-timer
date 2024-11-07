@@ -1,0 +1,7 @@
+{
+    "Misinformation": ["false", "untrue", "incorrect", "misleading", "inaccurate"],
+    "Disinformation": ["intentional", "deliberate", "purposeful", "deceptive"],
+    "Propaganda": ["propaganda", "manipulate", "influence", "bias", "agenda"],
+    "Satire": ["satire", "parody", "humor", "joke", "mock"],
+    "Clickbait": ["clickbait", "sensational", "exaggerated", "eye-catching"]
+}
