@@ -55,7 +55,6 @@
 
     def get_definition_scheme(self) -> Dict[str, List[str]]:
         return self.load_scheme(self.definition_scheme_path)
-
     def get_verification_scheme(self) -> Dict[str, List[str]]:
         return self.load_scheme(self.verification_scheme_path)
     class TextPreprocessor:
@@ -65,7 +64,6 @@
     def __init__(self):
         self.lemmatizer = WordNetLemmatizer()
         self.stop_words = set(stopwords.words('english'))
-
     def preprocess(self, text: str) -> str:
         text = self.clean_text(text)
         tokens = text.split()
@@ -83,14 +81,12 @@
         # Convert to lowercase
         text = text.lower()
         return text
-
     class ResponseCoder:
     """
     Codes responses based on provided coding schemes.
     """
     def __init__(self, coding_scheme: Dict[str, List[str]]):
         self.coding_scheme = coding_scheme
-
     def code_response(self, text: str) -> List[str]:
         codes_matched = []
         for code, keywords in self.coding_scheme.items():
@@ -127,7 +123,6 @@
         steps = re.split(r'[.,;\n]+', response)
         steps = [step.strip() for step in steps if step.strip()]
         return len(steps)
-
     def process_definitions(self, responses: List[str]) -> pd.DataFrame:
         data = []
         for response in responses:
@@ -137,7 +132,6 @@
         df = pd.DataFrame(data)
         logging.info("Processed definitions responses")
         return df
-
     def process_verifications(self, responses: List[str]) -> pd.DataFrame:
         data = []
         for response in responses:
