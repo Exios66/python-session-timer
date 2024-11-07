@@ -19,8 +19,11 @@ from sklearn.metrics import cohen_kappa_score
 # Ensure nltk resources are downloaded
 import nltk
 
+# Download required NLTK data
+nltk.download('punkt')
 nltk.download('stopwords')
 nltk.download('wordnet')
+nltk.download('omw-1.4')
 
 # Configure logging
 logging.basicConfig(

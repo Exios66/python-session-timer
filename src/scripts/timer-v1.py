@@ -29,6 +29,7 @@ import time
 import argparse
 import sys
 import os
+from plyer import notification
 
 def main():
     # Parse command-line arguments
@@ -39,13 +40,7 @@ def main():
         print(f"Sound file '{args.sound}' not found.")
         sys.exit(1)
 
-    # Import plyer and simpleaudio
-    try:
-        from plyer import notification
-    except ImportError:
-        print("Module 'plyer' not found. Install it by running 'pip install plyer'")
-        sys.exit(1)
-
+    # Import simpleaudio
     try:
         import simpleaudio as sa
     except ImportError:

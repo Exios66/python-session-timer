@@ -1,8 +1,13 @@
 from dataclasses import dataclass
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional, Union
 import csv
 import json
 import statistics
+from wsgiref import validate
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import logging
 
 @dataclass
 class SurveyCollector:
@@ -71,6 +76,127 @@ class SurveyCollector:
                 json.dump(results, jsonfile, indent=4)
         else:
             raise ValueError("Unsupported format. Please use 'csv' or 'json'.")
+
+    def validate_response(self, response: Dict[str, Any]) -> bool:
+        """Validate a complete survey response"""
+        try:
+            for block in self.blocks:
+                for question in block.questions:
+                    if question.question_id in response:
+                        question.validate_response(response[question.question_id])
+            return True
+        except ValueError as e:
+            logging.error(f"Response validation failed: {e}")
+            return False
+            
+    def export_to_spss(self, filename: str) -> None:
+        """Export responses to SPSS format"""
+        if not self.responses:
+            raise ValueError("No responses to export")
+            
+        df = pd.DataFrame(self.responses)
+        df.to_spss(filename)
+        
+    def export_to_excel(self, filename: str) -> None:
+        """Export responses to Excel with multiple sheets for different analyses"""
+        if not self.responses:
+            raise ValueError("No responses to export")
+            
+        with pd.ExcelWriter(filename) as writer:
+            # Raw responses
+            pd.DataFrame(self.responses).to_excel(writer, sheet_name='Raw Data')
+            
+            # Summary statistics
+            analyzer = ResponseAnalyzer(self)
+            summary_data = {}
+            
+            for block in self.blocks:
+                for question in block.questions:
+                    try:
+                        summary_data[question.question_id] = analyzer.analyze_question(
+                            question.question_id)
+                    except Exception as e:
+                        logging.warning(f"Could not analyze {question.question_id}: {e}")
+                        
+            pd.DataFrame(summary_data).to_excel(writer, sheet_name='Summary Statistics')
+
+class ResponseAnalyzer:
+    """Handles analysis of survey responses"""
+    def __init__(self, survey_collector: SurveyCollector):
+        self.survey = survey_collector
+        self.df: Optional[pd.DataFrame] = None
+        
+    def create_dataframe(self) -> pd.DataFrame:
+        """Convert responses to pandas DataFrame"""
+        if not self.survey.responses:
+            raise ValueError("No responses to analyze")
+            
+        self.df = pd.DataFrame(self.survey.responses)
+        return self.df
+    
+    def analyze_question(self, question_id: str) -> Dict[str, Any]:
+        """Analyze responses for a specific question"""
+        if self.df is None:
+            self.create_dataframe()
+            
+        if question_id not in self.df.columns:
+            raise ValueError(f"Question {question_id} not found in responses")
+            
+        series = self.df[question_id]
+        
+        # Get question type from survey
+        question = self._find_question(question_id)
+        
+        if question.question_type == 'likert_scale':
+            return self._analyze_likert(series)
+        elif question.question_type == 'multiple_choice':
+            return self._analyze_categorical(series)
+        elif question.question_type == 'scale':
+            return self._analyze_numerical(series)
+        else:
+            return self._analyze_text(series)
+            
+    def _analyze_likert(self, series: pd.Series) -> Dict[str, Any]:
+        """Analyze Likert scale responses"""
+        return {
+            'mean': series.mean(),
+            'median': series.median(),
+            'mode': series.mode().iloc[0],
+            'distribution': series.value_counts().to_dict(),
+            'std': series.std()
+        }
+        
+    def _analyze_categorical(self, series: pd.Series) -> Dict[str, Any]:
+        """Analyze categorical/multiple choice responses"""
+        counts = series.value_counts()
+        percentages = series.value_counts(normalize=True) * 100
+        return {
+            'counts': counts.to_dict(),
+            'percentages': percentages.to_dict(),
+            'mode': counts.index[0]
+        }
+        
+    def plot_question(self, question_id: str, plot_type: str = 'auto', 
+                     title: Optional[str] = None, **kwargs) -> None:
+        """Create visualization for question responses"""
+        if self.df is None:
+            self.create_dataframe()
+            
+        question = self._find_question(question_id)
+        data = self.df[question_id]
+        
+        plt.figure(figsize=(10, 6))
+        
+        if plot_type == 'auto':
+            if question.question_type in ['likert_scale', 'scale']:
+                sns.histplot(data=data, **kwargs)
+            else:
+                sns.countplot(data=data, **kwargs)
+                
+        plt.title(title or f'Responses for {question_id}')
+        plt.xticks(rotation=45)
+        plt.tight_layout()
+        plt.show()
 
 @dataclass
 class Block:
@@ -175,6 +301,18 @@ misinformation_threat.add_question(Question("Disinfo_threat", "On the scale from
 misinformation_threat.add_question(Question("Disinfo_Res", "In your opinion, who is primarily responsible for combating disinformation?", "multiple_choice", 
                                             ["Government", "Social Media Companies", "Educational Institutions", "News Outlets", "Individuals", "Other (Please specify)"]))
 
+# Voting Behavior Block
+voting_behavior = Block("Voting Behavior", [])
+voting_behavior.add_question(Question("Voted_2020", "Did you vote in the 2020 Presidential Election?", "multiple_choice", 
+                                    ["Yes (1)", "No (2)"]))
+voting_behavior.add_question(Question("Vote_Choice", "If you voted in the 2020 Presidential Election, which candidate did you vote for?", "multiple_choice", 
+                                    ["Joe Biden (1)", "Donald Trump (2)", "Another Candidate (3)", "Did not vote (4)"]))
+voting_behavior.add_question(Question("Voting_Motivation", "What were the main factors that influenced your decision to vote or not vote in the 2020 election?", "multiple_choice", 
+                                    ["Candidate policy positions (1)", "Candidate character (2)", "Party affiliation (3)", 
+                                     "Desire to influence election outcome (4)", "Civic duty (5)", "Social pressure (6)",
+                                     "Availability of time (7)", "Voter suppression concerns (8)", 
+                                     "Lack of trust in the electoral process (9)", "Other (10)"]))
+
 # Adding blocks to survey
 survey = SurveyCollector("PSY_492", "Election Experience Survey")
 survey.add_block(demographics)
@@ -184,6 +322,7 @@ survey.add_block(perception_news)
 survey.add_block(social_media)
 survey.add_block(media_consumption)
 survey.add_block(misinformation_threat)
+survey.add_block(voting_behavior)
 
 # Example of collecting a response
 sample_response = {
@@ -213,130 +352,192 @@ sample_response = {
     "Disinfo_Res": "Social Media Companies"
 }
 
-    {if survey.collect_response(sample_response):
+if survey.collect_response(sample_response):
     print("Response collected successfully")
-    else:
+else:
     print("Failed to collect response")
 
 # Process and export results
 survey.export_results()
-Here is the continuation of the **PSY 492 Election Experience Survey**:
 
-**Start of Block: Voting Behavior**
+print("Here is the continuation of the **PSY 492 Election Experience Survey**:")
 
-Voted_2020 Did you vote in the 2020 Presidential Election?
+print("**Start of Block: Voting Behavior**")
 
-- Yes (1)
-- No (2)
+print("Voted_2020 Did you vote in the 2020 Presidential Election?")
 
-Vote_Choice If you voted in the 2020 Presidential Election, which candidate did you vote for?
+print("- Yes (1)")
+print("- No (2)")
 
-- Joe Biden (1)
-- Donald Trump (2)
-- Another Candidate (3) ______________________________________________________________
-- Did not vote (4)
+print("Vote_Choice If you voted in the 2020 Presidential Election, which candidate did you vote for?")
 
-Voting_Motivation What were the main factors that influenced your decision to vote or not vote in the 2020 election? (Check all that apply)
+print("- Joe Biden (1)")
+print("- Donald Trump (2)")
+print("- Another Candidate (3) ______________________________________________________________")
+print("- Did not vote (4)")
 
-- [ ] Candidate policy positions (1)
-- [ ] Candidate character (2)
-- [ ] Party affiliation (3)
-- [ ] Desire to influence election outcome (4)
-- [ ] Civic duty (5)
-- [ ] Social pressure (6)
-- [ ] Availability of time (7)
-- [ ] Voter suppression concerns (8)
-- [ ] Lack of trust in the electoral process (9)
-- [ ] Other (10) ______________________________________________________________
+print("Voting_Motivation What were the main factors that influenced your decision to vote or not vote in the 2020 election? (Check all that apply)")
 
-Election_Outcome How satisfied were you with the outcome of the 2020 Presidential Election?
+print("Voting_Motivation What were the main factors that influenced your decision to vote or not vote in the 2020 election? (Check all that apply)")
+print("- [ ] Candidate policy positions (1)")
+print("- [ ] validate character (2)")
+print("- [ ] Party affiliation (3)")
+print("- [ ] Desire to influence election outcome (4)")
+print("- [ ] Civic duty (5)")
+print("- [ ] Social pressure (6)")
+print("- [ ] Availability of time (7)")
+print("- [ ] Voter suppression concerns (8)")
+print("- [ ] Lack of trust in the electoral process (9)")
+print("- [ ] Other (10) ______________________________________________________________")
 
-- Extremely dissatisfied (1)
-- Somewhat dissatisfied (2)
-- Neither satisfied nor dissatisfied (3)
-- Somewhat satisfied (4)
-- Extremely satisfied (5)
+print("Election_Outcome How satisfied were you with the outcome of the 2020 Presidential Election?")
+print("- Extremely dissatisfied (1)")
+print("- Somewhat dissatisfied (2)")
+print("- Neither satisfied nor dissatisfied (3)")
+print("- Somewhat satisfied (4)")
+print("- Extremely satisfied (5)")
 
-Voting_2024 If you plan to vote in the upcoming 2024 election, what issues will be most important to you when deciding whom to vote for? (Please list in order of importance)
+print("Voting_2024 If you plan to vote in the upcoming 2024 election, what issues will be most important to you when deciding whom to vote for? (Please list in order of importance)")
+print("1. ______________________________________________________________")
+print("2. ______________________________________________________________")
+print("3. ______________________________________________________________")
 
-1. ______________________________________________________________
-2. ______________________________________________________________
-3. ______________________________________________________________
+print("**End of Block: Voting Behavior**")
 
-**End of Block: Voting Behavior**
+print("**Start of Block: Political Efficacy and Participation**")
 
-**Start of Block: Political Efficacy and Participation**
+print("Political_Efficacy On a scale from 1 to 7, where 1 means 'Not at all effective' and 7 means 'Extremely effective,' how effective do you feel your vote is in influencing political change?")
+print("- 1 (Not at all effective) (1)")
+print("- 2 (2)")
+print("- 3 (3)")
+print("- 4 (4)")
+print("- 5 (5)")
+print("- 6 (6)")
+print("- 7 (Extremely effective) (7)")
 
-Political_Efficacy On a scale from 1 to 7, where 1 means "Not at all effective" and 7 means "Extremely effective," how effective do you feel your vote is in influencing political change?
+print("Political_Activism Have you engaged in any of the following political activities in the last 12 months? (Check all that apply)")
+print("- [ ] Attended a political rally or protest (1)")
+print("- [ ] Volunteered for a political campaign (2)")
+print("- [ ] Made political donations (3)")
+print("- [ ] Contacted a public official (4)")
+print("- [ ] Signed a political petition (5)")
+print("- [ ] Discussed politics with friends or family (6)")
+print("- [ ] None of the above (7)")
 
-- 1 (Not at all effective) (1)
-- 2 (2)
-- 3 (3)
-- 4 (4)
-- 5 (5)
-- 6 (6)
-- 7 (Extremely effective) (7)
+print("Volunteer_Why If you have volunteered for a political campaign or cause, what motivated you to do so?")
+print("- ______________________________________________________________")
 
-Political_Activism Have you engaged in any of the following political activities in the last 12 months? (Check all that apply)
+print("**End of Block: Political Efficacy and Participation**")
 
-- [ ] Attended a political rally or protest (1)
-- [ ] Volunteered for a political campaign (2)
-- [ ] Made political donations (3)
-- [ ] Contacted a public official (4)
-- [ ] Signed a political petition (5)
-- [ ] Discussed politics with friends or family (6)
-- [ ] None of the above (7)
+print("**Start of Block: Trust in Government**")
 
-Volunteer_Why If you have volunteered for a political campaign or cause, what motivated you to do so?
+print("Trust_Government Please rate your level of trust in the following government institutions on a scale from 1 (No trust at all) to 5 (Complete trust):")
+print("- Executive branch (President and administration)")
+print("  - 1 (1)")
+print("  - 2 (2)")
+print("  - 3 (3)")
+print("  - 4 (4)")
+print("  - 5 (Complete trust) (5)")
 
-- ______________________________________________________________
+print("- Legislative branch (Congress)")
+print("  - 1 (1)")
+print("  - 2 (2)")
+print("  - 3 (3)")
+print("  - 4 (4)")
+print("  - 5 (Complete trust) (5)")
 
-**End of Block: Political Efficacy and Participation**
+print("- Judicial branch (Courts)")
+print("  - 1 (1)")
+print("  - 2 (2)")
+print("  - 3 (3)")
+print("  - 4 (4)")
+print("  - 5 (Complete trust) (5)")
 
-**Start of Block: Trust in Government**
+print("- Local government")
+print("  - 1 (1)")
+print("  - 2 (2)")
+print("  - 3 (3)")
+print("  - 4 (4)")
+print("  - 5 (Complete trust) (5)")
 
-Trust_Government Please rate your level of trust in the following government institutions on a scale from 1 (No trust at all) to 5 (Complete trust):
+print("Trust_Loss What, if anything, would increase your trust in the government?")
+print("- ______________________________________________________________")
 
-- Executive branch (President and administration)
-  - 1 (1)
-  - 2 (2)
-  - 3 (3)
-  - 4 (4)
-  - 5 (Complete trust) (5)
+print("**End of Block: Trust in Government**")
 
-- Legislative branch (Congress)
-  - 1 (1)
-  - 2 (2)
-  - 3 (3)
-  - 4 (4)
-  - 5 (Complete trust) (5)
+print("**Start of Block: Closing**")
 
-- Judicial branch (Courts)
-  - 1 (1)
-  - 2 (2)
-  - 3 (3)
-  - 4 (4)
-  - 5 (Complete trust) (5)
+print("Feedback Is there anything else you would like to share about your political views, experiences, or any suggestions for this survey?")
+print("- ______________________________________________________________")
 
-- Local government
-  - 1 (1)
-  - 2 (2)
-  - 3 (3)
-  - 4 (4)
-  - 5 (Complete trust) (5)
+print("Thank you for participating in the PSY 492 Election Experience Survey. Your responses will contribute to valuable research on political behavior and media influence.")
 
-Trust_Loss What, if anything, would increase your trust in the government?
+print("**End of Block: Closing**")
 
-- ______________________________________________________________
-
-**End of Block: Trust in Government**
-
-**Start of Block: Closing**
-
-Feedback Is there anything else you would like to share about your political views, experiences, or any suggestions for this survey?
-
-- ______________________________________________________________
-
-Thank you for participating in the PSY 492 Election Experience Survey. Your responses will contribute to valuable research on political behavior and media influence.
-
-**End of Block: Closing**
+def run_analysis():
+    # Create survey collector
+    survey = SurveyCollector("PSY_492", "Election Experience Survey")
+    
+    # Create blocks
+    political_block = Block("political_views", "Political Views and Affiliation")
+    efficacy_block = Block("efficacy", "Political Efficacy and Participation") 
+    trust_block = Block("trust", "Trust in Government")
+    closing_block = Block("closing", "Closing")
+    
+    # Add blocks to survey
+    survey.add_block(political_block)
+    survey.add_block(efficacy_block)
+    survey.add_block(trust_block)
+    survey.add_block(closing_block)
+    
+    # Create analyzer
+    analyzer = ResponseAnalyzer(survey)
+    
+    # Analyze key questions
+    political_views = analyzer.analyze_question("Political_Views")
+    print("\nPolitical Views Analysis:")
+    print(political_views)
+    
+    party_affiliation = analyzer.analyze_question("Party_Affiliation") 
+    print("\nParty Affiliation Analysis:")
+    print(party_affiliation)
+    
+    trust_scores = analyzer.analyze_question("Trust_Government")
+    print("\nGovernment Trust Analysis:")
+    print(trust_scores)
+    
+    # Analyze open-ended responses
+    trust_loss = analyzer.analyze_text_responses("Trust_Loss")
+    print("\nTrust Loss Themes:")
+    print(trust_loss)
+    
+    volunteer_why = analyzer.analyze_text_responses("Volunteer_Why")
+    print("\nVolunteer Motivation Themes:")
+    print(volunteer_why)
+    
+    feedback = analyzer.analyze_text_responses("Feedback")
+    print("\nSurvey Feedback Themes:")
+    print(feedback)
+    
+    # Calculate correlations
+    correlations = analyzer.calculate_correlations([
+        "Political_Views",
+        "Party_Affiliation", 
+        "Trust_Government"
+    ])
+    print("\nCorrelation Analysis:")
+    print(correlations)
+    
+    # Create visualizations
+    analyzer.plot_question("Political_Views", 
+                         title="Distribution of Political Views",
+                         plot_type='histogram')
+    
+    analyzer.plot_question("Party_Affiliation",
+                         title="Party Affiliation Distribution")
+    
+    # Export results
+    survey.export_to_excel("survey_results.xlsx")
+    
+if __name__ == "__main__":
+    run_analysis()

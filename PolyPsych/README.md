@@ -8,8 +8,9 @@
     import argparse
     import logging
     from pathlib import Path
-    from typing import List, Dict, Any
+    from typing import Any, Dict, List
     from collections import Counter
+
     import pandas as pd
     import numpy as np
     import matplotlib.pyplot as plt
@@ -21,7 +22,7 @@
 ### If you need to perform reliability analysis
 
 #### Ensure nltk resources are downloaded
-    
+
     '''bash
     import nltk
 
@@ -29,6 +30,7 @@
     nltk.download('wordnet')
 
 # Configure logging
+
     logging.basicConfig(
     filename='processing.log',
     filemode='a',
@@ -290,46 +292,65 @@
     if __name__ == "__main__":
     main()
 
-### Detailed Explanation of Enhancements
+## Detailed Explanation of Enhancements
 
-#### 1.	Modular Structure with Classes:
-	•	CodingSchemeLoader: Handles loading of coding schemes from JSON files, allowing easy updates without modifying the code.
-	•	TextPreprocessor: Implements advanced text preprocessing including lemmatization and stopword removal using NLTK.
-	•	ResponseCoder: Encapsulates the logic for coding responses based on the loaded coding schemes.
-	•	DataProcessor: Manages reading responses, preprocessing, coding, and counting steps.
-	•	Analyzer: Provides methods for frequency computation, descriptive statistics, plotting, and reliability analysis.
-	•	Visualizer: Although integrated into the Analyzer for simplicity, it can be expanded for more complex visualization needs.
-#### 2.	Dynamic Loading of Coding Schemes:
-	•	Coding schemes are now loaded from external JSON files (definition_coding_scheme.json and verification_coding_scheme.json). This makes it easier to update or modify coding schemes without changing the script.
-#### 3.	Advanced Text Preprocessing:
-	•	Utilizes NLTK’s WordNetLemmatizer to reduce words to their base forms.
-	•	Removes stopwords to focus on meaningful keywords.
-	•	Cleans text by removing URLs, special characters, and digits to enhance the quality of text data for coding.
-#### 4. Reliability Analysis:
-	•	The framework includes a placeholder for computing Cohen’s Kappa, which measures inter-rater reliability. This can be implemented when multiple coders are involved.
-#### 5.	Visualization Enhancements:
-	•	Uses matplotlib and seaborn to create bar plots for code frequencies and histograms for descriptive statistics.
-	•	Saves plots to a specified directory, enhancing the reporting capabilities.
-#### 6.	Command-Line Interface (CLI):
-	•	Employs argparse to allow users to specify input and output file paths, coding scheme locations, and plots directory via command-line arguments.
-	•	This makes the script more flexible and user-friendly.
-#### 7.	Logging and Error Handling:
-	•	Implements logging to record the processing steps and any errors encountered, which is crucial for debugging and tracking the script’s execution.
-	•	Comprehensive error handling ensures that issues like missing files or malformed JSON are reported clearly.
-#### 8.	Unit Testing and Documentation:
-	•	While not explicitly shown in the script, the modular design facilitates unit testing of individual components.
-	•	Detailed docstrings and comments provide clarity on the purpose and functionality of each class and method.
-#### 9.	Extensibility for Psychometric Analyses:
-	•	The framework is designed to be extensible, allowing the addition of more sophisticated psychometric analyses such as factor analysis or item response theory as needed.
+### Enhancements Overview
+
+#### 1. Modular Structure with Classes
+
+ • CodingSchemeLoader: Handles loading of coding schemes from JSON files, allowing easy updates without modifying the code.
+ • TextPreprocessor: Implements advanced text preprocessing including lemmatization and stopword removal using NLTK.
+ • ResponseCoder: Encapsulates the logic for coding responses based on the loaded coding schemes.
+ • DataProcessor: Manages reading responses, preprocessing, coding, and counting steps.
+ • Analyzer: Provides methods for frequency computation, descriptive statistics, plotting, and reliability analysis.
+ • Visualizer: Although integrated into the Analyzer for simplicity, it can be expanded for more complex visualization needs.
+
+#### 2. Dynamic Loading of Coding Schemes
+
+ • Coding schemes are now loaded from external JSON files (definition_coding_scheme.json and verification_coding_scheme.json). This makes it easier to update or modify coding schemes without changing the script.
+
+#### 3. Advanced Text Preprocessing
+
+ • Utilizes NLTK’s WordNetLemmatizer to reduce words to their base forms.
+ • Removes stopwords to focus on meaningful keywords.
+ • Cleans text by removing URLs, special characters, and digits to enhance the quality of text data for coding.
+
+#### 4. Reliability Analysis
+
+ • The framework includes a placeholder for computing Cohen’s Kappa, which measures inter-rater reliability. This can be implemented when multiple coders are involved.
+
+#### 5. Visualization Enhancements
+
+- Uses matplotlib and seaborn to create bar plots for code frequencies and histograms for descriptive statistics.
+- Saves plots to a specified directory, enhancing the reporting capabilities.
+
+#### 6. Command-Line Interface (CLI)
+
+- Employs argparse to allow users to specify input and output file paths, coding scheme locations, and plots directory via command-line arguments.
+- This makes the script more flexible and user-friendly.
+
+#### 7. Logging and Error Handling
+
+ • Implements logging to record the processing steps and any errors encountered, which is crucial for debugging and tracking the script’s execution.
+ • Comprehensive error handling ensures that issues like missing files or malformed JSON are reported clearly.
+
+#### 8. Unit Testing and Documentation
+
+ • While not explicitly shown in the script, the modular design facilitates unit testing of individual components.
+ • Detailed docstrings and comments provide clarity on the purpose and functionality of each class and method.
+
+#### 9. Extensibility for Psychometric Analyses
+
+ • The framework is designed to be extensible, allowing the addition of more sophisticated psychometric analyses such as factor analysis or item response theory as needed.
 
 ### Additional Recommendations
 
-	•	Unit Tests: Implement unit tests using frameworks like unittest or pytest to verify the functionality of each component.
-	•	Virtual Environment: Use a virtual environment (e.g., venv or conda) to manage dependencies and ensure reproducibility.
-	•	Requirements File: Create a requirements.txt file listing all dependencies for easy installation.
-	•	Dockerization: For enhanced portability, consider containerizing the application using Docker.
-	•	User Interface: Develop a simple GUI or web interface for users who prefer not to use the command line.
-	•	Machine Learning Integration: For more accurate coding, integrate machine learning models (e.g., supervised classifiers) trained on labeled data to automate the coding process.
+- Implement unit tests using frameworks like unittest or pytest to verify the functionality of each component.
+- Use a virtual environment (e.g., venv or conda) to manage dependencies and ensure reproducibility.
+- Create a requirements.txt file listing all dependencies for easy installation.
+- For enhanced portability, consider containerizing the application using Docker.
+- Develop a simple GUI or web interface for users who prefer not to use the command line.
+- For more accurate coding, integrate machine learning models (e.g., supervised classifiers) trained on labeled data to automate the coding process.
 
 ## Example of Coding Scheme JSON File
 
@@ -355,10 +376,11 @@ Similarly, create verification_coding_scheme.json:
     "Check Date": ["date", "timeliness", "recent", "updated"]
     }
 
-#### Running the Script
+## Inputs
+
+## Running the Script
 
 Ensure that you have the necessary JSON files and input text files (fake_news_definitions.txt and fake_news_verification.txt) in the appropriate directories. Then, execute the script via the command line:
-
     python expanded_framework.py --definitions_input path/to/fake_news_definitions.txt \
                              --verifications_input path/to/fake_news_verification.txt \
                              --definition_scheme path/to/definition_coding_scheme.json \
@@ -369,4 +391,4 @@ Ensure that you have the necessary JSON files and input text files (fake_news_de
 
 Replace path/to/ with your actual file paths. The script will process the responses, apply coding schemes, perform analyses, and generate visualizations, all while logging its progress and any issues encountered.
 
-#### Conclusion
+### Conclusion
