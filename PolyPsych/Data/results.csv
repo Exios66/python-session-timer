@@ -1,0 +1,64 @@
+Age
+23,1
+Year
+Junior (3),1
+Ethnicity
+No (2),1
+Race
+Other (6),0
+White or Caucasian (1),0
+Household_Income
+Prefer not to say (7),1
+Election
+Yes (1),1
+Party_Affiliation
+Democrat (2),1
+R_Strength
+Not very strong (2),1
+D_Strength
+Strong (1),1
+Independent_Lean
+Democratic (2),1
+Political_Views
+mean,4
+median,4
+mode,4
+count,1
+Party_Registration
+Democratic (2),1
+P_Efficacy
+mean,3
+median,3
+mode,3
+count,1
+P_Knowledge_1
+Vice President,1
+P_Knowledge_2
+Supreme Court,1
+P_Knowledge_3
+Two-thirds,1
+P_Knowledge_4
+Democratic,1
+P_Knowledge_5
+Republican,1
+ABC_News
+mean,4
+median,4
+mode,4
+count,1
+Social_Media
+mean,5
+median,5
+mode,5
+count,1
+News_1
+Television (2),1
+News_frequency
+A few times a week,1
+Disinfo_threat
+mean,8
+median,8
+mode,8
+count,1
+Disinfo_Res
+Social Media Companies,1

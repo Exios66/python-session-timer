@@ -8,6 +8,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import logging
+from datetime import datetime
+import os
 
 @dataclass
 class SurveyCollector:
@@ -60,9 +62,21 @@ class SurveyCollector:
         return processed_results
 
     def export_results(self, filename='results', format='csv'):
+        """Export results with timestamp to PolyPsych/Data folder"""
+        # Create timestamp
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        
+        # Ensure the Data directory exists
+        data_dir = os.path.join('PolyPsych', 'Data')
+        os.makedirs(data_dir, exist_ok=True)
+        
+        # Create timestamped filename
+        timestamped_filename = f"{filename}_{timestamp}"
+        full_path = os.path.join(data_dir, timestamped_filename)
+        
         results = self.process_responses()
         if format == 'csv':
-            with open(f"{filename}.csv", 'w', newline='') as csvfile:
+            with open(f"{full_path}.csv", 'w', newline='') as csvfile:
                 writer = csv.writer(csvfile)
                 for question_id, data in results.items():
                     writer.writerow([question_id])
@@ -72,7 +86,7 @@ class SurveyCollector:
                     else:
                         writer.writerow([data])
         elif format == 'json':
-            with open(f"{filename}.json", 'w') as jsonfile:
+            with open(f"{full_path}.json", 'w') as jsonfile:
                 json.dump(results, jsonfile, indent=4)
         else:
             raise ValueError("Unsupported format. Please use 'csv' or 'json'.")
@@ -90,19 +104,30 @@ class SurveyCollector:
             return False
             
     def export_to_spss(self, filename: str) -> None:
-        """Export responses to SPSS format"""
+        """Export responses to SPSS format with timestamp"""
         if not self.responses:
             raise ValueError("No responses to export")
-            
+        
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        data_dir = os.path.join('PolyPsych', 'Data')
+        os.makedirs(data_dir, exist_ok=True)
+        
+        full_path = os.path.join(data_dir, f"{filename}_{timestamp}.sav")
         df = pd.DataFrame(self.responses)
-        df.to_spss(filename)
+        df.to_spss(full_path)
         
     def export_to_excel(self, filename: str) -> None:
-        """Export responses to Excel with multiple sheets for different analyses"""
+        """Export responses to Excel with timestamp"""
         if not self.responses:
             raise ValueError("No responses to export")
             
-        with pd.ExcelWriter(filename) as writer:
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        data_dir = os.path.join('PolyPsych', 'Data')
+        os.makedirs(data_dir, exist_ok=True)
+        
+        full_path = os.path.join(data_dir, f"{filename}_{timestamp}.xlsx")
+        
+        with pd.ExcelWriter(full_path) as writer:
             # Raw responses
             pd.DataFrame(self.responses).to_excel(writer, sheet_name='Raw Data')
             
