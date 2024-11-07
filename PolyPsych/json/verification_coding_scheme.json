@@ -1,0 +1,7 @@
+{
+    "Check Source": ["source", "author", "publisher", "website"],
+    "Cross-Reference": ["cross-reference", "compare", "other sources", "multiple sources"],
+    "Fact-Check Websites": ["fact-check", "snopes", "factcheck.org", "politifact"],
+    "Reverse Image Search": ["reverse image", "image search", "photo verification"],
+    "Check Date": ["date", "timeliness", "recent", "updated"]
+}
