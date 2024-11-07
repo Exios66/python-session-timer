@@ -1,6 +1,6 @@
 # Evaluation Python Script
 
-'''python
+    '''python
 
     import re
     import csv
@@ -18,8 +18,9 @@
     from nltk.stem import WordNetLemmatizer
     from sklearn.metrics import cohen_kappa_score
 
-# If you need to perform reliability analysis
-# Ensure nltk resources are downloaded
+### If you need to perform reliability analysis
+
+#### Ensure nltk resources are downloaded
     
     '''bash
     import nltk
@@ -291,34 +292,34 @@
 
 ### Detailed Explanation of Enhancements
 
-	1.	Modular Structure with Classes:
+#### 1.	Modular Structure with Classes:
 	•	CodingSchemeLoader: Handles loading of coding schemes from JSON files, allowing easy updates without modifying the code.
 	•	TextPreprocessor: Implements advanced text preprocessing including lemmatization and stopword removal using NLTK.
 	•	ResponseCoder: Encapsulates the logic for coding responses based on the loaded coding schemes.
 	•	DataProcessor: Manages reading responses, preprocessing, coding, and counting steps.
 	•	Analyzer: Provides methods for frequency computation, descriptive statistics, plotting, and reliability analysis.
 	•	Visualizer: Although integrated into the Analyzer for simplicity, it can be expanded for more complex visualization needs.
-	2.	Dynamic Loading of Coding Schemes:
+#### 2.	Dynamic Loading of Coding Schemes:
 	•	Coding schemes are now loaded from external JSON files (definition_coding_scheme.json and verification_coding_scheme.json). This makes it easier to update or modify coding schemes without changing the script.
-	3.	Advanced Text Preprocessing:
+#### 3.	Advanced Text Preprocessing:
 	•	Utilizes NLTK’s WordNetLemmatizer to reduce words to their base forms.
 	•	Removes stopwords to focus on meaningful keywords.
 	•	Cleans text by removing URLs, special characters, and digits to enhance the quality of text data for coding.
-	4.	Reliability Analysis:
+#### 4. Reliability Analysis:
 	•	The framework includes a placeholder for computing Cohen’s Kappa, which measures inter-rater reliability. This can be implemented when multiple coders are involved.
-	5.	Visualization Enhancements:
+#### 5.	Visualization Enhancements:
 	•	Uses matplotlib and seaborn to create bar plots for code frequencies and histograms for descriptive statistics.
 	•	Saves plots to a specified directory, enhancing the reporting capabilities.
-	6.	Command-Line Interface (CLI):
+#### 6.	Command-Line Interface (CLI):
 	•	Employs argparse to allow users to specify input and output file paths, coding scheme locations, and plots directory via command-line arguments.
 	•	This makes the script more flexible and user-friendly.
-	7.	Logging and Error Handling:
+#### 7.	Logging and Error Handling:
 	•	Implements logging to record the processing steps and any errors encountered, which is crucial for debugging and tracking the script’s execution.
 	•	Comprehensive error handling ensures that issues like missing files or malformed JSON are reported clearly.
-	8.	Unit Testing and Documentation:
+#### 8.	Unit Testing and Documentation:
 	•	While not explicitly shown in the script, the modular design facilitates unit testing of individual components.
 	•	Detailed docstrings and comments provide clarity on the purpose and functionality of each class and method.
-	9.	Extensibility for Psychometric Analyses:
+#### 9.	Extensibility for Psychometric Analyses:
 	•	The framework is designed to be extensible, allowing the addition of more sophisticated psychometric analyses such as factor analysis or item response theory as needed.
 
 ### Additional Recommendations
