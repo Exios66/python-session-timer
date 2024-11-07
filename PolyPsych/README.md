@@ -1,38 +1,41 @@
-"""python
+# Evaluation Python Script
 
-import re
-import csv
-import json
-import argparse
-import logging
-from pathlib import Path
-from typing import List, Dict, Any
-from collections import Counter
+    '''python
 
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
-from nltk.corpus import stopwords
-from nltk.stem import WordNetLemmatizer
-from sklearn.metrics import cohen_kappa_score
+    import re
+    import csv
+    import json
+    import argparse
+    import logging
+    from pathlib import Path
+    from typing import List, Dict, Any
+    from collections import Counter
+    import pandas as pd
+    import numpy as np
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+    from nltk.corpus import stopwords
+    from nltk.stem import WordNetLemmatizer
+    from sklearn.metrics import cohen_kappa_score
 
 # If you need to perform reliability analysis
 # Ensure nltk resources are downloaded
-import nltk
+    
+    '''bash
+    import nltk
 
-nltk.download('stopwords')
-nltk.download('wordnet')
+    nltk.download('stopwords')
+    nltk.download('wordnet')
 
 # Configure logging
-logging.basicConfig(
+    logging.basicConfig(
     filename='processing.log',
     filemode='a',
     format='%(asctime)s - %(levelname)s - %(message)s',
     level=logging.INFO
 )
 
-class CodingSchemeLoader:
+    class CodingSchemeLoader:
     """
     Loads coding schemes from JSON files.
     """
@@ -333,30 +336,31 @@ class CodingSchemeLoader:
 	•	User Interface: Develop a simple GUI or web interface for users who prefer not to use the command line.
 	•	Machine Learning Integration: For more accurate coding, integrate machine learning models (e.g., supervised classifiers) trained on labeled data to automate the coding process.
 
-Example of Coding Scheme JSON File
+## Example of Coding Scheme JSON File
 
 To use the dynamic coding scheme loader, create JSON files for definitions and verifications. Here’s an example for definition_coding_scheme.json:
-'''json
-{
+
+    '''json
+    {
     "Misinformation": ["false", "untrue", "incorrect", "misleading", "inaccurate"],
     "Disinformation": ["intentional", "deliberate", "purposeful", "deceptive"],
     "Propaganda": ["propaganda", "manipulate", "influence", "bias", "agenda"],
     "Satire": ["satire", "parody", "humor", "joke", "mock"],
     "Clickbait": ["clickbait", "sensational", "exaggerated", "eye-catching"]
-}
-'''
+    }
+    '''
 
 Similarly, create verification_coding_scheme.json:
 
-{
+    {
     "Check Source": ["source", "author", "publisher", "website"],
     "Cross-Reference": ["cross-reference", "compare", "other sources", "multiple sources"],
     "Fact-Check Websites": ["fact-check", "snopes", "factcheck.org", "politifact"],
     "Reverse Image Search": ["reverse image", "image search", "photo verification"],
     "Check Date": ["date", "timeliness", "recent", "updated"]
-}
+    }
 
-Running the Script
+#### Running the Script
 
 Ensure that you have the necessary JSON files and input text files (fake_news_definitions.txt and fake_news_verification.txt) in the appropriate directories. Then, execute the script via the command line:
 
@@ -370,6 +374,4 @@ Ensure that you have the necessary JSON files and input text files (fake_news_de
 
 Replace path/to/ with your actual file paths. The script will process the responses, apply coding schemes, perform analyses, and generate visualizations, all while logging its progress and any issues encountered.
 
-Conclusion
-
-The expanded framework provides a robust, flexible, and maintainable structure for processing and analyzing fake news definitions and verifications. By incorporating modularity, dynamic configuration, advanced preprocessing, comprehensive analysis, and visualization, the framework is well-equipped to handle complex data processing tasks and can be easily extended to accommodate future requirements.
+#### Conclusion
