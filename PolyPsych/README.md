@@ -1,7 +1,6 @@
 # Evaluation Python Script
 
-    '''python
-
+'''python
     import re
     import csv
     import json
